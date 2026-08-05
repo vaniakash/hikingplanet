@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* Hide scrollbar globally for all elements */
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+/* Chrome, Safari, Edge, Opera */
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  background: transparent;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+.hero-gradient {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* ── TrekPlanet Design Tokens ── */
+:root {
+  --deep-navy: #0F172A;
+  --forest-green: #2D4030;
+  --muted-green: #4A5D4C;
+  --terracotta: #C25E44;
+  --clay: #8E4D3E;
+  --sand: #F4F1EA;
+  --deep-earth: #1F1B1A;
+}
+
+.indigenous-pattern {
+  background-color: transparent;
+  background-image: radial-gradient(#C25E44 0.5px, transparent 0.5px),
+    radial-gradient(#C25E44 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  opacity: 0.05;
+}
+
+.angular-card {
+  clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+}
+
+.geometric-border {
+  position: relative;
+}
+
+.geometric-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-image: linear-gradient(45deg, var(--terracotta) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--terracotta) 25%, transparent 25%);
+  background-size: 8px 8px;
+}
+
+.motif-bg {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 30-30 30L0 30z' fill='%23C25E44' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.octagonal-frame {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.hero-clip {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.divider-pattern {
+  height: 12px;
+  background-image: repeating-linear-gradient(45deg, var(--terracotta), var(--terracotta) 2px, transparent 2px, transparent 10px);
+  width: 100%;
+}
