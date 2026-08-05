@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import AnalyticsEvent from '@/models/AnalyticsEvent';
-import Enquiry from '@/models/Enquiry';
+import { Enquiry } from '@/models/Enquiry';
 
 // Basic auth check can be added here if session management exists
 // For now, we'll assume the admin dashboard is protected via middleware or layout.
