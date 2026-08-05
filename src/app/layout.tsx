@@ -15,12 +15,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.hikingplanet.in"),
+  alternates: {
+    canonical: "https://www.hikingplanet.in",
+  },
   title: {
-    default: "HikingPlanet | Expert Himalayan Treks in Uttarakhand",
+    default: "HikingPlanet",
     template: "%s | HikingPlanet",
   },
   description:
-    "Explore expert-led Himalayan treks across Uttarakhand. Small groups, certified trek leaders, local guides, safe adventures, and unforgettable mountain experiences.",
+    "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
   keywords: [
     "himalayan trek",
     "uttarkashi trek",
@@ -88,15 +91,15 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://www.hikingplanet.in",
     siteName: "HikingPlanet",
-    title: "HikingPlanet | Expert Himalayan Treks in Uttarakhand",
+    title: "HikingPlanet",
     description:
-      "Explore expert-led Himalayan treks across Uttarakhand. Small groups, certified trek leaders, local guides, safe adventures, and unforgettable mountain experiences.",
+      "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
     images: [
       {
-        url: "/logo.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "HikingPlanet Logo",
+        alt: "HikingPlanet",
         type: "image/jpeg",
       },
     ],
@@ -107,13 +110,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@hikingplanet",
     creator: "@hikingplanet",
-    title: "HikingPlanet | Expert Himalayan Treks in Uttarakhand",
+    title: "HikingPlanet",
     description:
-      "Explore expert-led Himalayan treks across Uttarakhand. Small groups, certified trek leaders, local guides, safe adventures, and unforgettable mountain experiences.",
+      "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
     images: [
       {
-        url: "/logo.png",
-        alt: "HikingPlanet Logo",
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "HikingPlanet",
       },
     ],
   },

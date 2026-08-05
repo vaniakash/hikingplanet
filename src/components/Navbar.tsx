@@ -87,6 +87,29 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
             { name: 'Meet The Team', href: '/about', desc: 'Get to know our certified trek leaders & local experts' },
         ],
     };
+    useEffect(() => {
+        if (announcementOpen) {
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    campaignId: 'butter-festival-2026',
+                    eventName: 'announcement_view'
+                })
+            }).catch(console.error);
+        }
+    }, [announcementOpen]);
+
+    const handleAnnouncementClick = () => {
+        fetch('/api/analytics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                campaignId: 'butter-festival-2026',
+                eventName: 'announcement_click'
+            })
+        }).catch(console.error);
+    };
 
     return (
         <header ref={navRef} className="sticky top-0 z-50 w-full flex flex-col bg-white shadow-md select-none">
@@ -96,29 +119,27 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                     <motion.div
                         initial={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="bg-[#1C2B39] text-white px-4 py-2 flex items-center justify-between text-xs sm:text-sm overflow-hidden"
+                        className="bg-slate-900 text-white overflow-hidden relative z-[60]"
                     >
-                        <div className="flex items-center gap-2 overflow-hidden max-w-[80%] md:max-w-[70%]">
-                            <Megaphone weight="fill" className="text-[#e30613] w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                            <span className="truncate font-medium text-slate-100">
-                                Just launched: A New 4-Day Unexplored India Travel Programme. This time, it's Unexplored Konkan
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-                            <Link
-                                href="/treks"
-                                className="bg-[#2B4C6F] hover:bg-[#355c85] text-white text-[11px] sm:text-xs font-bold px-3 py-1.5 rounded transition-colors whitespace-nowrap"
-                            >
-                                View Unexploration
-                            </Link>
-                            <button
-                                onClick={() => setAnnouncementOpen(false)}
-                                className="text-white/80 hover:text-white p-1 focus:outline-none"
-                                aria-label="Close announcement"
-                            >
-                                <X size={16} weight="bold" />
-                            </button>
-                        </div>
+                        <Link href="/butter-festival" onClick={handleAnnouncementClick} className="block py-1.5 px-4 sm:px-6 lg:px-8 text-[11px] sm:text-xs font-semibold tracking-wide hover:bg-slate-800 transition-colors group relative cursor-pointer">
+                            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 pr-8">
+                                <div className="flex items-center gap-2 text-center sm:text-left">
+                                    <span className="animate-pulse">🏔️</span>
+                                    <span>Registrations are now open for the Butter Festival (Anduri Utsav) at Dayara Bugyal — August 17, 2025. Experience Uttarakhand's most unique Himalayan festival.</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                    <span>Limited seats available.</span>
+                                    <span className="font-bold underline">Register Now →</span>
+                                </div>
+                            </div>
+                        </Link>
+                        <button
+                            onClick={() => setAnnouncementOpen(false)}
+                            className="absolute top-1/2 -translate-y-1/2 right-4 text-white/80 hover:text-white p-1 focus:outline-none z-10"
+                            aria-label="Close announcement"
+                        >
+                            <X size={16} weight="bold" />
+                        </button>
                     </motion.div>
                 )}
             </AnimatePresence>

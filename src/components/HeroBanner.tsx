@@ -8,7 +8,7 @@ import { CaretLeft, CaretRight, Megaphone } from '@phosphor-icons/react/dist/ssr
 
 const slides = [
     {
-        image: '/images/hero.webp',
+        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785929316/hikingplanet/hero/tbcxrenhcuqfprgpykqi.jpg',
         headline: "What If Your Next Trek Changed Everything?",
         subtitle: 'Join us on a mindfully designed trek experience that connects you to yourself. The person before and after the trek are rarely the same.',
         ctaText: 'View Upcoming Treks',
@@ -16,7 +16,7 @@ const slides = [
         reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
     },
     {
-        image: '/images/heroji.webp',
+        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928865/hikingplanet/hero/z1jgr885bgldsswzv2fy.jpg',
         headline: 'Conquer The White Wilderness',
         subtitle: "Experience the magic of snow-covered peaks on Uttarakhand's most iconic winter treks. Mindfully curated for pure transformation.",
         ctaText: 'View Winter Treks',
@@ -24,7 +24,7 @@ const slides = [
         reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
     },
     {
-        image: '/images/herosection.webp',
+        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928866/hikingplanet/hero/ndjx2tvzgigwyh4xaccq.jpg',
         headline: 'Where Meadows Touch The Sky',
         subtitle: 'Discover vast alpine bugyals, wildflowers, and panoramic Himalayan views that expand your horizons and clear your mind.',
         ctaText: 'Explore Meadow Treks',
@@ -32,7 +32,7 @@ const slides = [
         reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
     },
     {
-        image: '/images/herosectionne.webp',
+        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928868/hikingplanet/hero/fgfib9vf635g2xib74ax.jpg',
         headline: 'Adventure With Purpose',
         subtitle: 'Small groups, expert guides, and journeys designed for meaningful exploration. Leave the mountains better than you found them.',
         ctaText: 'View All Expeditions',
@@ -216,13 +216,13 @@ export default function HeroBanner() {
                             <Megaphone weight="fill" className="w-5 h-5" />
                         </div>
                         <span className="font-extrabold text-slate-900">
-                            Registrations are in full swing for the Pin Bhaba Pass trek: A trek we rank in our Top 3 of all time.
+                            Registrations are now open for the Dayara Bugyal Trek — walk through endless alpine meadows with breathtaking Himalayan views.
                         </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5 font-semibold text-slate-700 md:text-right flex-shrink-0">
-                        <span>Open in July and August only.</span>
-                        <Link href="/treks" className="text-[#0066CC] hover:text-[#004d99] underline font-bold transition-colors ml-1">
-                            Here's what earns it a Top 3 ranking.
+                        <span>Limited seats available.</span>
+                        <Link href="/treks/dayara-bugyal-trek" className="text-[#0066CC] hover:text-[#004d99] underline font-bold transition-colors ml-1">
+                            Explore the Trek →
                         </Link>
                     </div>
                 </div>

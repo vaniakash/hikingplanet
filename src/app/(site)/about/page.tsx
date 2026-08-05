@@ -4,14 +4,14 @@ import FadeIn from '@/components/FadeIn';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 
 export const metadata = {
-    title: 'Our Roots | HikingPlanet - Modern Indigenous Himalayan Journeys',
+    title: 'Our Roots | HikingPlanet',
     description:
         'Born in Uttarkashi—the true gateway to iconic high-altitude routes—we are redefining adventure with an unwavering focus on safety, logistics, and meaningful exploration.',
     alternates: { canonical: 'https://www.hikingplanet.in/about' },
     openGraph: {
         type: 'website',
         url: 'https://www.hikingplanet.in/about',
-        title: 'Our Roots | HikingPlanet — Himalayan Journeys from Uttarkashi',
+        title: 'Our Roots | HikingPlanet',
         description:
             'Born in Uttarkashi—the true gateway to iconic high-altitude routes. Meet the team redefining adventure with safety, logistics, and meaningful exploration.',
         images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'HikingPlanet — Our Roots' }],

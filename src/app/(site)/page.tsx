@@ -2,26 +2,27 @@ import type { Metadata } from 'next';
 import HeroBanner from '@/components/HeroBanner';
 import { WhySection, CTASection, FeaturedTreksHeader } from '@/components/AnimatedSections';
 import TrailMoments from '@/components/TrailMoments';
+import LeadCapturePopup from '@/components/LeadCapturePopup';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'HikingPlanet — Modern Indigenous Himalayan Journeys',
+  title: { absolute: "HikingPlanet" },
   description:
-    'Book expert-led Himalayan treks from Uttarkashi. Beginner-friendly to advanced expeditions with safety, certified leaders, food & stay included.',
+    "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
   alternates: { canonical: 'https://www.hikingplanet.in' },
   openGraph: {
     type: 'website',
     url: 'https://www.hikingplanet.in',
-    title: 'HikingPlanet — Modern Indigenous Himalayan Journeys',
+    title: 'HikingPlanet',
     description:
-      'Book your Himalayan trek today. Safety-first expeditions led by certified trek leaders from Uttarkashi.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'HikingPlanet — Himalayan Adventures' }],
+      "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'HikingPlanet' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'HikingPlanet — Modern Indigenous Himalayan Journeys',
-    description: 'Book your Himalayan trek today. Certified leaders, safety-first, from Uttarkashi.',
+    title: 'HikingPlanet',
+    description: "Discover the real Himalayas with HikingPlanet. Experience authentic trekking adventures, stunning landscapes, local culture, and unforgettable memories.",
     images: ['/og-image.jpg'],
   },
 };
@@ -73,7 +74,7 @@ function TrekCardsSkeleton() {
 export default function Home() {
   return (
     <div className="bg-[#F4F1EA]">
-
+      <LeadCapturePopup />
       {/* ── Hero ── */}
       <HeroBanner />
 

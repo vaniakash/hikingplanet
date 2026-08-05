@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Mountain, Settings, Calendar, Sun, Moon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, Mountain, Settings, Calendar, Sun, Moon, ChevronLeft, ChevronRight, BarChart, Users } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
@@ -19,6 +19,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     };
 
     const navItems = [
+        { name: 'Analytics', href: '/admin/analytics', icon: BarChart },
+        { name: 'Lead Management', href: '/admin/leads', icon: Users },
         { name: 'Manage Treks', href: '/admin/treks', icon: Mountain },
         { name: 'All Bookings', href: '/admin/bookings', icon: Calendar },
     ];
