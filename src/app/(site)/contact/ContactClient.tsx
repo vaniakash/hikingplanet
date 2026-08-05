@@ -178,14 +178,14 @@ export default function ContactClient() {
                                                         <Phone weight="fill" className="w-5 h-5" />
                                                     ),
                                                     label: 'Voice Dispatch',
-                                                    value: '+91 1374 222 555',
+                                                    value: '+91 90273 14439',
                                                 },
                                                 {
                                                     icon: (
                                                         <ChatCircle weight="fill" className="w-5 h-5" />
                                                     ),
                                                     label: 'WhatsApp Circle',
-                                                    value: '+91 98765 43210',
+                                                    value: '+91 90273 14439',
                                                 },
                                                 {
                                                     icon: <At weight="bold" className="w-5 h-5" />,

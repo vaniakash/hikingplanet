@@ -127,7 +127,7 @@ const orgJsonLd = {
   logo: "https://www.hikingplanet.in/logo.png",
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+91-1374-222-555",
+    telephone: "+91 90273 14439",
     contactType: "customer service",
     availableLanguage: ["English", "Hindi"],
   },

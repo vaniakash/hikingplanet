@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function WhatsAppButton({ trekName }: Props) {
-  const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "918556043708";
+  const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919027314439";
 
   const message = trekName
     ? `Hi, I want to book the ${trekName}. Please share details.`
