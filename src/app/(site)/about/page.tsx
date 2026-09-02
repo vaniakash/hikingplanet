@@ -328,7 +328,7 @@ export default function AboutPage() {
                         <p className="text-white/80 text-xl font-serif mb-12 italic">
                             Experience the transformative power of the high Himalayas with us.
                         </p>
-                        <Link href="/treks">
+                        <Link href="/upcoming-treks">
                             <button className="bg-[#0F172A] text-white px-12 py-6 font-black uppercase tracking-widest hover:bg-[#1F1B1A] transition-all angular-card flex items-center gap-4 mx-auto text-lg group">
                                 Explore Expeditions
                                 <ArrowRight

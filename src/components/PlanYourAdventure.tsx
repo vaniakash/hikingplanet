@@ -16,83 +16,21 @@ interface TrekItem {
     image: string;
 }
 
-const defaultTreks: TrekItem[] = [
-    {
-        id: '1',
-        title: 'Valley of Flowers Trek',
-        slug: 'valley-of-flowers',
-        location: 'Uttarakhand',
-        duration: '6 days',
-        grade: 'Easy to Moderate',
-        image: '/images/hero.webp'
-    },
-    {
-        id: '2',
-        title: 'Hampta Pass Trek',
-        slug: 'hampta-pass',
-        location: 'Himachal Pradesh',
-        duration: '5 days',
-        grade: 'Moderate',
-        image: '/images/heroji.webp'
-    },
-    {
-        id: '3',
-        title: 'Pin Bhaba Pass Trek',
-        slug: 'pin-bhaba-pass',
-        location: 'Himachal Pradesh',
-        duration: '8 days',
-        grade: 'Moderate to Difficult',
-        image: '/images/herosection.webp'
-    },
-    {
-        id: '4',
-        title: 'Markha Valley Trek',
-        slug: 'markha-valley',
-        location: 'Ladakh',
-        duration: '7 days',
-        grade: 'Moderate',
-        image: '/images/herosectionne.webp'
-    }
-];
-
-const filterOptions = [
-    'Upcoming Treks', 'India', 'Nepal', 'Africa', 'Russia', 'China', 'Spring', 'Summer', 'Autumn', 'Monsoon', 'Winter',
-    'Himachal Pradesh', 'Kashmir', 'Ladakh', 'Pokhara', 'Sikkim', 'Uttarakhand', 'West Bengal',
-    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December',
-    'Easy', 'Easy to Moderate', 'Moderate', 'Moderate to Difficult', 'Difficult', 'Challenging',
-    'Trekking', 'Mountaineering', 'Pilgrimage Tours', 'Multi Sports', 'Beginner', 'Couples', 'Crossover Through',
-    'Family with kids', 'Frozen River and Waterfall', 'Glacier', 'Hot Springs', 'Lakes', 'Meadow', 'Off Beat Trek',
-    'Snow', 'Summit a Peak', 'River', 'Peaks View', 'Walk in the Valley', 'Waterfall'
-];
-
 export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?: any[] }) {
-    const [activeFilter, setActiveFilter] = useState('Upcoming Treks');
     const [favorites, setFavorites] = useState<Record<string, boolean>>({});
-    const filterScrollRef = useRef<HTMLDivElement>(null);
     const carouselRef = useRef<HTMLDivElement>(null);
 
-    // Merge default treks with database treks if available
-    const displayTreks: TrekItem[] = defaultTreks.map((defaultTrek, idx) => {
-        const dbTrek = initialTreks[idx];
-        if (dbTrek) {
-            return {
-                id: dbTrek._id?.toString() || defaultTrek.id,
-                title: defaultTrek.title, // Keep requested titles for perfect match
-                slug: dbTrek.slug || defaultTrek.slug,
-                location: defaultTrek.location,
-                duration: defaultTrek.duration,
-                grade: defaultTrek.grade,
-                image: dbTrek.images?.[0] || defaultTrek.image
-            };
-        }
-        return defaultTrek;
-    });
+    const displayTreks: TrekItem[] = (initialTreks || []).map((dbTrek: any) => ({
+        id: dbTrek._id?.toString() || Math.random().toString(),
+        title: dbTrek.title,
+        slug: dbTrek.slug,
+        location: dbTrek.location?.replace('Bhatwari Block, ', ''),
+        duration: `${dbTrek.duration} days`,
+        grade: dbTrek.difficulty,
+        image: dbTrek.images?.[0] || ''
+    }));
 
-    const scrollFilters = () => {
-        if (filterScrollRef.current) {
-            filterScrollRef.current.scrollBy({ left: 250, behavior: 'smooth' });
-        }
-    };
+
 
     const scrollCarousel = (direction: 'left' | 'right') => {
         if (carouselRef.current) {
@@ -121,46 +59,7 @@ export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?
                     <div className="w-12 h-1 bg-[#e30613] mt-4 rounded-full" />
                 </div>
 
-                {/* ── Filter Bar Section ── */}
-                <div className="flex items-center gap-3 relative mb-14 max-w-7xl mx-auto">
-                    {/* Left Filter Icon Button */}
-                    <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center flex-shrink-0 shadow-md hover:bg-gray-800 transition-colors cursor-pointer">
-                        <SlidersHorizontal weight="bold" size={18} />
-                    </div>
 
-                    {/* Scrollable Filter Pills */}
-                    <div 
-                        ref={filterScrollRef}
-                        className="flex items-center gap-2.5 overflow-x-auto scrollbar-none py-1 scroll-smooth px-1 select-none flex-grow"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                    >
-                        {filterOptions.map((filter) => {
-                            const isActive = activeFilter === filter;
-                            return (
-                                <button
-                                    key={filter}
-                                    onClick={() => setActiveFilter(filter)}
-                                    className={`flex-shrink-0 text-xs px-4.5 py-2 rounded-full font-bold transition-all shadow-sm ${
-                                        isActive
-                                            ? 'bg-[#e30613] text-white shadow-md'
-                                            : 'bg-white border border-gray-200 text-gray-700 hover:border-gray-400'
-                                    }`}
-                                >
-                                    {filter}
-                                </button>
-                            );
-                        })}
-                    </div>
-
-                    {/* Right Scroll Arrow */}
-                    <button
-                        onClick={scrollFilters}
-                        className="w-9 h-9 rounded-full bg-white border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 flex-shrink-0 shadow-sm cursor-pointer z-10 hidden sm:flex focus:outline-none"
-                        aria-label="Scroll filters right"
-                    >
-                        <CaretRight weight="bold" size={16} />
-                    </button>
-                </div>
 
                 {/* ── Carousel Section Title ── */}
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-6 text-left">
@@ -193,7 +92,11 @@ export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?
                         className="flex gap-6 overflow-x-auto scrollbar-none py-2 scroll-smooth px-1"
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
-                        {displayTreks.map((trek) => {
+                        {displayTreks.length === 0 ? (
+                            <div className="w-full text-center py-10 text-gray-500">
+                                No treks found in the database.
+                            </div>
+                        ) : displayTreks.map((trek) => {
                             const isFav = favorites[trek.id];
                             return (
                                 <div
@@ -202,12 +105,16 @@ export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?
                                 >
                                     {/* Image Container */}
                                     <div className="relative h-64 w-full overflow-hidden bg-slate-100">
-                                        <Image
-                                            src={trek.image}
-                                            alt={trek.title}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                                        />
+                                        {trek.image ? (
+                                            <Image
+                                                src={trek.image}
+                                                alt={trek.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-slate-400">No Image</div>
+                                        )}
                                         
                                         {/* Favorite Heart Button */}
                                         <button

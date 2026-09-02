@@ -54,7 +54,7 @@ export default function ButterFestivalPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/enquiry', {
+      const res = await fetch('/api/payu/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -64,22 +64,45 @@ export default function ButterFestivalPage() {
         }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error('Failed to submit registration');
+        throw new Error(data.error || 'Failed to initialize payment');
       }
 
-      setIsSubmitted(true);
-      fetch('/api/analytics', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              campaignId: 'butter-festival-2026',
-              eventName: 'form_submitted'
-          })
-      }).catch(console.error);
+      // Create a form dynamically and submit to PayU
+      const form = document.createElement('form');
+      form.setAttribute('method', 'POST');
+      form.setAttribute('action', data.payuUrl);
+
+      const params = {
+        key: data.key,
+        txnid: data.txnid,
+        amount: data.amount,
+        productinfo: data.productinfo,
+        firstname: data.firstname,
+        email: data.email,
+        phone: data.phone,
+        surl: data.surl,
+        furl: data.furl,
+        hash: data.hash,
+        udf1: data.udf1,
+      };
+
+      for (const key in params) {
+        if (params[key as keyof typeof params]) {
+          const hiddenField = document.createElement('input');
+          hiddenField.setAttribute('type', 'hidden');
+          hiddenField.setAttribute('name', key);
+          hiddenField.setAttribute('value', params[key as keyof typeof params]);
+          form.appendChild(hiddenField);
+        }
+      }
+
+      document.body.appendChild(form);
+      form.submit();
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -326,6 +349,13 @@ export default function ButterFestivalPage() {
                       ></textarea>
                     </div>
 
+                    <div className="mt-4 p-4 bg-orange-50 border border-orange-100 rounded-lg text-sm text-orange-800 flex items-start gap-3">
+                      <span className="text-xl">💳</span>
+                      <p>
+                        <strong>Advance Booking Fee:</strong> An advance fee of <strong>₹10</strong> is required to confirm your registration. You will be redirected to our secure payment gateway.
+                      </p>
+                    </div>
+
                     <button
                       type="submit"
                       disabled={isLoading}
@@ -334,7 +364,7 @@ export default function ButterFestivalPage() {
                       {isLoading ? (
                         <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                       ) : (
-                        'Register for Butter Festival'
+                        'Pay ₹10 & Register'
                       )}
                     </button>
                     <p className="text-center text-xs text-slate-500 mt-4">

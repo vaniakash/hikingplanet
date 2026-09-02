@@ -109,7 +109,7 @@ export default function NotFound() {
                                 <Home className="text-[#10b981] group-hover:text-[#12e235] transition-colors w-6 h-6" />
                                 <span className="text-sm font-semibold">Home</span>
                             </Link>
-                            <Link href="/treks" className="group flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white dark:hover:bg-[#065f46] transition-all border border-transparent hover:border-[#a7f3d0] dark:hover:border-[#047857]">
+                            <Link href="/upcoming-treks" className="group flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-white dark:hover:bg-[#065f46] transition-all border border-transparent hover:border-[#a7f3d0] dark:hover:border-[#047857]">
                                 <Compass className="text-[#10b981] group-hover:text-[#12e235] transition-colors w-6 h-6" />
                                 <span className="text-sm font-semibold">Treks</span>
                             </Link>

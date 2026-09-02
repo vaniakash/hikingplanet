@@ -191,7 +191,7 @@ export default function BookingPage(props: { params: Promise<{ tripId: string }>
             <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
             <h1 className="text-xl font-bold mb-2">Something went wrong</h1>
             <p className="text-gray-600 mb-6">{error || 'Trip not found'}</p>
-            <Link href="/treks" className="text-blue-600 hover:underline flex items-center gap-2">
+            <Link href="/upcoming-treks" className="text-blue-600 hover:underline flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" /> Back to Treks
             </Link>
         </div>

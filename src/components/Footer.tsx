@@ -4,8 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
     Mountains,
-    FacebookLogo,
-    TwitterLogo,
     InstagramLogo,
     Envelope,
     MapPin,
@@ -80,7 +78,7 @@ export default function Footer() {
                             Resources
                         </h4>
                         <ul className="space-y-4 text-white/60 text-sm font-medium">
-                            <li><Link href="/treks" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">All Treks</Link></li>
+                            <li><Link href="/upcoming-treks" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">All Treks</Link></li>
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Trek Difficulty Guide</Link></li>
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Packing List</Link></li>
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Safety Guidelines</Link></li>
@@ -140,7 +138,7 @@ export default function Footer() {
                                 <div className="p-1.5 bg-white/5 rounded-full shrink-0">
                                     <Envelope weight="fill" className="w-4 h-4 text-[var(--terracotta)]" />
                                 </div>
-                                <span className="pt-1">trekplanet.official@gmail.com</span>
+                                <span className="pt-1">hikingplanet.official@gmail.com</span>
                             </li>
                             <li className="flex items-start gap-4">
                                 <div className="p-1.5 bg-white/5 rounded-full shrink-0">
@@ -182,14 +180,8 @@ export default function Footer() {
                         {/* Social Icons */}
                         <div className="flex items-center gap-4">
                             <span className="text-[10px] uppercase font-black tracking-widest text-[var(--terracotta)] mr-2">Follow Us</span>
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#1877F2] hover:-translate-y-1 transition-all angular-card shadow-lg">
-                                <FacebookLogo weight="fill" className="w-6 h-6" />
-                            </a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#E4405F] hover:-translate-y-1 transition-all angular-card shadow-lg">
+                            <a href="https://www.instagram.com/hikingplanet.in/" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#E4405F] hover:-translate-y-1 transition-all angular-card shadow-lg">
                                 <InstagramLogo weight="fill" className="w-6 h-6" />
-                            </a>
-                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/5 flex items-center justify-center text-white/60 hover:text-white hover:bg-[#1DA1F2] hover:-translate-y-1 transition-all angular-card shadow-lg">
-                                <TwitterLogo weight="fill" className="w-6 h-6" />
                             </a>
                         </div>
                     </div>

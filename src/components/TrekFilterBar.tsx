@@ -90,11 +90,11 @@ function FilterAccordion() {
         } else {
             params.set(key, value);
         }
-        router.push(`/treks?${params.toString()}`, { scroll: false });
+        router.push(`/upcoming-treks?${params.toString()}`, { scroll: false });
     };
 
     const clearFilters = () => {
-        router.push('/treks', { scroll: false });
+        router.push('/upcoming-treks', { scroll: false });
     };
 
     const activeFiltersCount = Array.from(searchParams.keys()).length;

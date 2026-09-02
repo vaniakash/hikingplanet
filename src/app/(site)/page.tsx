@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import HeroBanner from '@/components/HeroBanner';
-import { WhySection, CTASection, FeaturedTreksHeader } from '@/components/AnimatedSections';
-import TrailMoments from '@/components/TrailMoments';
+import { CTASection, FeaturedTreksHeader } from '@/components/AnimatedSections';
 import LeadCapturePopup from '@/components/LeadCapturePopup';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -83,11 +82,7 @@ export default function Home() {
         <FeaturedTreks />
       </Suspense>
 
-      {/* ── Why HikingPlanet — fully animated ── */}
-      <WhySection />
 
-      {/* ── Trail Moments GSAP Gallery ── */}
-      <TrailMoments />
 
       {/* ── CTA — animated blobs + staggered text ── */}
       <CTASection />

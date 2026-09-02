@@ -45,8 +45,25 @@ const enquirySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['New', 'Contacted', 'Interested', 'Confirmed', 'Cancelled'],
+      enum: ['New', 'Contacted', 'Interested', 'Confirmed', 'Cancelled', 'Payment Pending'],
       default: 'New',
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['Pending', 'Success', 'Failed'],
+      default: 'Pending',
+    },
+    payuTransactionId: {
+      type: String,
+      required: false,
+    },
+    amountPaid: {
+      type: Number,
+      required: false,
+    },
+    paymentTimestamp: {
+      type: Date,
+      required: false,
     },
   },
   { timestamps: true }

@@ -162,7 +162,7 @@ export function CTASection() {
 
                     <motion.div variants={fadeUp} className="flex flex-wrap justify-center items-center gap-6">
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                            <Link href="/treks">
+                            <Link href="/upcoming-treks">
                                 <button className="bg-[#C25E44] text-white px-10 py-5 font-black uppercase tracking-widest flex items-center gap-4 group angular-card hover:bg-[#8E4D3E] transition-all">
                                     Browse All Treks
                                     <ArrowRight weight="bold" className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -205,7 +205,7 @@ export function FeaturedTreksHeader() {
             </div>
             <motion.div variants={fadeUp}>
                 <Link
-                    href="/treks"
+                    href="/upcoming-treks"
                     className="flex items-center gap-4 text-[#C25E44] font-black uppercase tracking-widest hover:gap-6 transition-all group"
                 >
                     View All Expeditions

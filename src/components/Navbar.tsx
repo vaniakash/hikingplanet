@@ -8,7 +8,6 @@ import { List, X, CaretDown, CaretUp, Megaphone, MagnifyingGlass } from '@phosph
 import Image from 'next/image';
 
 export default function Navbar({ treks = [] }: { treks?: any[] }) {
-    const [announcementOpen, setAnnouncementOpen] = useState(true);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeMobileTab, setActiveMobileTab] = useState<string | null>(null);
@@ -42,6 +41,12 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
     const byName = [...treks].sort((a, b) => a.title.localeCompare(b.title));
     const byDifficulty: Record<string, any[]> = { 'Easy': [], 'Moderate': [], 'Difficult': [], 'Expert': [] };
     treks.forEach(t => { if (byDifficulty[t.difficulty]) byDifficulty[t.difficulty].push(t); });
+
+    // Live search results
+    const searchResults = searchQuery.trim() === '' ? [] : treks.filter(t => 
+        t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (t.region && t.region.toLowerCase().includes(searchQuery.toLowerCase()))
+    ).slice(0, 5);
 
     const toggleDropdown = (name: string) => {
         setActiveDropdown(activeDropdown === name ? null : name);
@@ -87,62 +92,11 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
             { name: 'Meet The Team', href: '/about', desc: 'Get to know our certified trek leaders & local experts' },
         ],
     };
-    useEffect(() => {
-        if (announcementOpen) {
-            fetch('/api/analytics', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    campaignId: 'butter-festival-2026',
-                    eventName: 'announcement_view'
-                })
-            }).catch(console.error);
-        }
-    }, [announcementOpen]);
 
-    const handleAnnouncementClick = () => {
-        fetch('/api/analytics', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                campaignId: 'butter-festival-2026',
-                eventName: 'announcement_click'
-            })
-        }).catch(console.error);
-    };
 
     return (
         <header ref={navRef} className="sticky top-0 z-50 w-full flex flex-col bg-white shadow-md select-none">
-            {/* ── Top Announcement Banner ── */}
-            <AnimatePresence>
-                {announcementOpen && (
-                    <motion.div
-                        initial={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="bg-slate-900 text-white overflow-hidden relative z-[60]"
-                    >
-                        <Link href="/butter-festival" onClick={handleAnnouncementClick} className="block py-1.5 px-4 sm:px-6 lg:px-8 text-[11px] sm:text-xs font-semibold tracking-wide hover:bg-slate-800 transition-colors group relative cursor-pointer">
-                            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-4 pr-8">
-                                <div className="flex items-center gap-2 text-center sm:text-left">
-                                    <span className="animate-pulse">🏔️</span>
-                                    <span>Registrations are now open for the Butter Festival (Anduri Utsav) at Dayara Bugyal — August 17, 2025. Experience Uttarakhand's most unique Himalayan festival.</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                    <span>Limited seats available.</span>
-                                    <span className="font-bold underline">Register Now →</span>
-                                </div>
-                            </div>
-                        </Link>
-                        <button
-                            onClick={() => setAnnouncementOpen(false)}
-                            className="absolute top-1/2 -translate-y-1/2 right-4 text-white/80 hover:text-white p-1 focus:outline-none z-10"
-                            aria-label="Close announcement"
-                        >
-                            <X size={16} weight="bold" />
-                        </button>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
 
             {/* ── Main Navigation Bar (White) ── */}
             <div className="bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-4">
@@ -162,8 +116,8 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                 <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-slate-900 text-xs xl:text-sm font-extrabold uppercase tracking-tight">
                     <Link href="/about" className="hover:text-[#C25E44] transition-colors py-1">Careers</Link>
                     <Link href="/contact" className="hover:text-[#C25E44] transition-colors py-1">Contact Us</Link>
-                    <Link href="/treks" className="hover:text-[#C25E44] transition-colors py-1">Shop</Link>
-                    <Link href="/treks" className="hover:text-[#C25E44] transition-colors py-1">Rent</Link>
+                    <Link href="/upcoming-treks" className="hover:text-[#C25E44] transition-colors py-1">Shop</Link>
+                    <Link href="/upcoming-treks" className="hover:text-[#C25E44] transition-colors py-1">Rent</Link>
                     <Link href="/about" className="hover:text-[#C25E44] transition-colors py-1">My Profile</Link>
                     
                     {/* All Treks Trigger */}
@@ -178,21 +132,55 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                     </div>
                 </div>
 
-                {/* Search Bar */}
                 <div className="hidden md:flex items-center flex-1 max-w-xs xl:max-w-md relative">
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setActiveDropdown(null)}
                         placeholder="Search treks by name, region, difficulty etc"
                         className="w-full bg-slate-100 border border-slate-200 rounded-full pl-4 pr-10 py-2 text-xs text-slate-800 placeholder-slate-500 focus:outline-none focus:border-[#C25E44] focus:bg-white transition-all font-medium"
                     />
                     <Link
-                        href={`/treks${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ''}`}
+                        href={`/upcoming-treks${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ''}`}
+                        onClick={() => setSearchQuery('')}
                         className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#E8EAEF] hover:bg-[#D5D8E0] rounded-full flex items-center justify-center text-slate-700 transition-colors focus:outline-none"
                     >
                         <MagnifyingGlass size={14} weight="bold" />
                     </Link>
+
+                    {/* Desktop Live Search Dropdown */}
+                    <AnimatePresence>
+                        {searchQuery.trim() !== '' && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 5 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-[60] overflow-hidden"
+                            >
+                                {searchResults.length > 0 ? (
+                                    <div className="flex flex-col">
+                                        {searchResults.map((trek: any) => (
+                                            <Link 
+                                                key={trek.slug} 
+                                                href={`/treks/${trek.slug}`}
+                                                onClick={() => setSearchQuery('')}
+                                                className="px-4 py-3 hover:bg-slate-50 border-b last:border-0 border-slate-100 flex flex-col transition-colors group"
+                                            >
+                                                <span className="text-sm font-bold text-[#e30613] group-hover:text-[#c20510]">{trek.title}</span>
+                                                <span className="text-xs text-slate-500">({trek.region || 'Uttarakhand'})</span>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="px-4 py-3 text-sm text-slate-500 text-center">
+                                        No treks found for "{searchQuery}"
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* Mobile Hamburger Toggle */}
@@ -209,7 +197,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
 
             {/* ── Secondary Navigation Bar (Vibrant Red) ── */}
             <div className="bg-[#e30613] border-b border-red-700/30 px-4 sm:px-6 lg:px-8 py-2.5 hidden lg:flex items-center justify-center gap-6 xl:gap-10 text-white text-xs xl:text-[13px] font-black uppercase tracking-wider">
-                <Link href="/treks" className="hover:text-white/80 transition-colors py-1">Upcoming Treks</Link>
+                <Link href="/upcoming-treks" className="hover:text-white/80 transition-colors py-1">Upcoming Treks</Link>
                 
                 <div className="relative">
                     <button
@@ -220,7 +208,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                     </button>
                 </div>
 
-                <Link href="/treks?category=unexplored" className="hover:text-white/80 transition-colors py-1">Unexplored India Trips</Link>
+                <Link href="/upcoming-treks?category=unexplored" className="hover:text-white/80 transition-colors py-1">Unexplored India Trips</Link>
 
                 <div className="relative">
                     <button
@@ -288,7 +276,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                                                     {t.title}
                                                 </Link>
                                             ))}
-                                            <Link href="/treks" onClick={() => setActiveDropdown(null)} className="text-xs font-extrabold text-[#C25E44] hover:underline mt-2 pt-2 border-t border-slate-100">
+                                            <Link href="/upcoming-treks" onClick={() => setActiveDropdown(null)} className="text-xs font-extrabold text-[#C25E44] hover:underline mt-2 pt-2 border-t border-slate-100">
                                                 VIEW ALL TREKS →
                                             </Link>
                                         </div>
@@ -376,18 +364,51 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                                     className="w-full bg-white border border-slate-200 rounded-full pl-4 pr-10 py-2 text-xs text-slate-800 placeholder-slate-500 focus:outline-none focus:border-[#C25E44]"
                                 />
                                 <Link
-                                    href={`/treks${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ''}`}
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    href={`/upcoming-treks${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ''}`}
+                                    onClick={() => { setMobileMenuOpen(false); setSearchQuery(''); }}
                                     className="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 bg-[#E8EAEF] rounded-full flex items-center justify-center text-slate-700"
                                 >
                                     <MagnifyingGlass size={14} weight="bold" />
                                 </Link>
+
+                                {/* Mobile Live Search Dropdown */}
+                                <AnimatePresence>
+                                    {searchQuery.trim() !== '' && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 5 }}
+                                            transition={{ duration: 0.15 }}
+                                            className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-[60] overflow-hidden"
+                                        >
+                                            {searchResults.length > 0 ? (
+                                                <div className="flex flex-col">
+                                                    {searchResults.map((trek: any) => (
+                                                        <Link 
+                                                            key={trek.slug} 
+                                                            href={`/treks/${trek.slug}`}
+                                                            onClick={() => { setMobileMenuOpen(false); setSearchQuery(''); }}
+                                                            className="px-4 py-3 hover:bg-slate-50 border-b last:border-0 border-slate-100 flex flex-col transition-colors group"
+                                                        >
+                                                            <span className="text-sm font-bold text-[#e30613] group-hover:text-[#c20510]">{trek.title}</span>
+                                                            <span className="text-xs text-slate-500">({trek.region || 'Uttarakhand'})</span>
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="px-4 py-3 text-sm text-slate-500 text-center">
+                                                    No treks found for "{searchQuery}"
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         </div>
 
                         {/* Mobile Accordion Links */}
                         <div className="flex flex-col divide-y divide-slate-100 text-slate-900 font-extrabold text-xs uppercase tracking-wider">
-                            <Link href="/treks" onClick={() => setMobileMenuOpen(false)} className="p-4 hover:bg-slate-50">Upcoming Treks</Link>
+                            <Link href="/upcoming-treks" onClick={() => setMobileMenuOpen(false)} className="p-4 hover:bg-slate-50">Upcoming Treks</Link>
                             
                             {/* Themed Treks */}
                             <div>
@@ -404,7 +425,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                                 )}
                             </div>
 
-                            <Link href="/treks?category=unexplored" onClick={() => setMobileMenuOpen(false)} className="p-4 hover:bg-slate-50">Unexplored India Trips</Link>
+                            <Link href="/upcoming-treks?category=unexplored" onClick={() => setMobileMenuOpen(false)} className="p-4 hover:bg-slate-50">Unexplored India Trips</Link>
 
                             {/* Outdoor Learning */}
                             <div>
@@ -470,8 +491,8 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                             <div className="p-4 bg-slate-100 grid grid-cols-2 gap-4 text-center text-xs font-black text-slate-700">
                                 <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Careers</Link>
                                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Contact Us</Link>
-                                <Link href="/treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Shop</Link>
-                                <Link href="/treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Rent</Link>
+                                <Link href="/upcoming-treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Shop</Link>
+                                <Link href="/upcoming-treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Rent</Link>
                                 <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="col-span-2 p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">My Profile</Link>
                             </div>
                         </div>

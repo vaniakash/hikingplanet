@@ -12,32 +12,32 @@ const slides = [
         headline: "What If Your Next Trek Changed Everything?",
         subtitle: 'Join us on a mindfully designed trek experience that connects you to yourself. The person before and after the trek are rarely the same.',
         ctaText: 'View Upcoming Treks',
-        ctaLink: '/treks',
-        reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
+        ctaLink: '/upcoming-treks',
+        reviewText: "Join thousands of happy trekkers on our next adventure."
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928865/hikingplanet/hero/z1jgr885bgldsswzv2fy.jpg',
         headline: 'Conquer The White Wilderness',
         subtitle: "Experience the magic of snow-covered peaks on Uttarakhand's most iconic winter treks. Mindfully curated for pure transformation.",
         ctaText: 'View Winter Treks',
-        ctaLink: '/treks?category=winter',
-        reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
+        ctaLink: '/upcoming-treks?category=winter',
+        reviewText: "Join thousands of happy trekkers on our next adventure."
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928866/hikingplanet/hero/ndjx2tvzgigwyh4xaccq.jpg',
         headline: 'Where Meadows Touch The Sky',
         subtitle: 'Discover vast alpine bugyals, wildflowers, and panoramic Himalayan views that expand your horizons and clear your mind.',
         ctaText: 'Explore Meadow Treks',
-        ctaLink: '/treks?category=meadows',
-        reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
+        ctaLink: '/upcoming-treks?category=meadows',
+        reviewText: "Join thousands of happy trekkers on our next adventure."
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928868/hikingplanet/hero/fgfib9vf635g2xib74ax.jpg',
         headline: 'Adventure With Purpose',
         subtitle: 'Small groups, expert guides, and journeys designed for meaningful exploration. Leave the mountains better than you found them.',
         ctaText: 'View All Expeditions',
-        ctaLink: '/treks',
-        reviewText: "13,000+ Google reviews with an average of 4.9 can't be wrong."
+        ctaLink: '/upcoming-treks',
+        reviewText: "Join thousands of happy trekkers on our next adventure."
     },
 ];
 
