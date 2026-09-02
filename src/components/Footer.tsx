@@ -132,7 +132,7 @@ export default function Footer() {
                                 <div className="p-1.5 bg-white/5 rounded-full shrink-0">
                                     <Phone weight="fill" className="w-4 h-4 text-[var(--terracotta)]" />
                                 </div>
-                                <span className="pt-1">+91 90273 14439</span>
+                                <span className="pt-1">+91 85560 43708</span>
                             </li>
                             <li className="flex items-start gap-4">
                                 <div className="p-1.5 bg-white/5 rounded-full shrink-0">
