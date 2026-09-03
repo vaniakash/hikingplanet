@@ -114,11 +114,11 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
 
                 {/* Desktop Links */}
                 <div className="hidden lg:flex items-center gap-6 xl:gap-8 text-slate-900 text-xs xl:text-sm font-extrabold uppercase tracking-tight">
-                    <Link href="/about" className="hover:text-[#C25E44] transition-colors py-1">Careers</Link>
+                    <Link href="/careers" className="hover:text-[#C25E44] transition-colors py-1">Careers</Link>
                     <Link href="/contact" className="hover:text-[#C25E44] transition-colors py-1">Contact Us</Link>
-                    <Link href="/upcoming-treks" className="hover:text-[#C25E44] transition-colors py-1">Shop</Link>
-                    <Link href="/upcoming-treks" className="hover:text-[#C25E44] transition-colors py-1">Rent</Link>
-                    <Link href="/about" className="hover:text-[#C25E44] transition-colors py-1">My Profile</Link>
+                    <Link href="/shop" className="hover:text-[#C25E44] transition-colors py-1">Shop</Link>
+                    <Link href="/rent" className="hover:text-[#C25E44] transition-colors py-1">Rent</Link>
+                    <Link href="/myprofile" className="hover:text-[#C25E44] transition-colors py-1">My Profile</Link>
                     
                     {/* All Treks Trigger */}
                     <div className="relative">
@@ -489,11 +489,11 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
 
                             {/* Top links for mobile */}
                             <div className="p-4 bg-slate-100 grid grid-cols-2 gap-4 text-center text-xs font-black text-slate-700">
-                                <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Careers</Link>
+                                <Link href="/careers" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Careers</Link>
                                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Contact Us</Link>
-                                <Link href="/upcoming-treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Shop</Link>
-                                <Link href="/upcoming-treks" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Rent</Link>
-                                <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="col-span-2 p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">My Profile</Link>
+                                <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Shop</Link>
+                                <Link href="/rent" onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">Rent</Link>
+                                <Link href="/myprofile" onClick={() => setMobileMenuOpen(false)} className="col-span-2 p-2 bg-white rounded shadow-sm hover:text-[#C25E44]">My Profile</Link>
                             </div>
                         </div>
                     </motion.div>

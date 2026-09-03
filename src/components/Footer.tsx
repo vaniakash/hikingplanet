@@ -109,7 +109,7 @@ export default function Footer() {
                         </h4>
                         <ul className="space-y-4 text-white/60 text-sm font-medium">
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Help Center</Link></li>
-                            <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Cancellation & Refund Policy</Link></li>
+                            <li><a href="/files/Hiking_Planet_Cancellation_Refund_Policy.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Cancellation & Refund Policy</a></li>
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">FAQs</Link></li>
                             <li><Link href="#" className="hover:text-[var(--terracotta)] hover:translate-x-1 inline-block transition-all duration-300">Safety Info</Link></li>
                         </ul>
@@ -169,12 +169,6 @@ export default function Footer() {
                                 </div>
                                 <span className="text-white/60 font-black uppercase tracking-widest text-[10px]">Secure Payments</span>
                             </div>
-                            <div className="flex items-center gap-3 group">
-                                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
-                                    <Certificate weight="fill" className="w-5 h-5 text-amber-500" />
-                                </div>
-                                <span className="text-white/60 font-black uppercase tracking-widest text-[10px]">ISO Certified</span>
-                            </div>
                         </div>
 
                         {/* Social Icons */}
@@ -191,8 +185,8 @@ export default function Footer() {
                         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
                             <Link href="/policies/privacy" className="hover:text-[var(--terracotta)] transition-colors">Privacy Policy</Link>
                             <Link href="/policies/terms" className="hover:text-[var(--terracotta)] transition-colors">Terms of Service</Link>
-                            <Link href="/policies/refund" className="hover:text-[var(--terracotta)] transition-colors">Cancellation & Refund Policy</Link>
-                            <Link href="/policies/disclaimer" className="hover:text-[var(--terracotta)] transition-colors">Disclaimer</Link>
+                            <a href="/files/Hiking_Planet_Cancellation_Refund_Policy.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--terracotta)] transition-colors">Cancellation & Refund Policy</a>
+                            <a href="/files/Hiking_Planet_Trekker_Disclaimer%20(1).pdf" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--terracotta)] transition-colors">Disclaimer</a>
                             <Link href="/policies/cookie" className="hover:text-[var(--terracotta)] transition-colors">Cookie Policy</Link>
                             <Link href="/admin/login" className="hover:text-[var(--terracotta)] transition-colors opacity-30 hover:opacity-100">Admin Login</Link>
                         </div>
