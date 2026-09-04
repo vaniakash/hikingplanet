@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion, Variants } from 'framer-motion';
 import { CaretLeft, CaretRight, Megaphone, ShieldCheck } from '@phosphor-icons/react/dist/ssr';
 
 const slides = [
@@ -73,7 +73,7 @@ const swipePower = (offset: number, velocity: number) => {
 };
 
 // Scene (Slide) transition variants
-const sceneVariants = {
+const sceneVariants: Variants = {
     enter: (direction: number) => {
         return {
             x: direction > 0 ? 1000 : -1000,
@@ -105,14 +105,14 @@ const sceneVariants = {
     }
 };
 
-const reducedSceneVariants = {
+const reducedSceneVariants: Variants = {
     enter: { opacity: 0 },
     center: { zIndex: 1, opacity: 1, transition: { duration: 0.8 } },
     exit: { zIndex: 0, opacity: 0, transition: { duration: 0.8 } }
 };
 
 // Text stagger container
-const textContainer = {
+const textContainer: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
@@ -121,7 +121,7 @@ const textContainer = {
 };
 
 // Each text piece slides up + fades in
-const textItem = {
+const textItem: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
@@ -159,7 +159,7 @@ export default function HeroBanner({ lowestPrice = 6999, lowestPriceSlug = null 
                     <motion.div
                         key={page}
                         custom={direction}
-                        variants={shouldReduceMotion ? reducedSceneVariants as any : sceneVariants as any}
+                        variants={shouldReduceMotion ? reducedSceneVariants : sceneVariants}
                         initial="enter"
                         animate="center"
                         exit="exit"
