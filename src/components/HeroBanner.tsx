@@ -1,208 +1,296 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CaretLeft, CaretRight, Megaphone } from '@phosphor-icons/react/dist/ssr';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { CaretLeft, CaretRight, Megaphone, ShieldCheck } from '@phosphor-icons/react/dist/ssr';
 
 const slides = [
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785929316/hikingplanet/hero/tbcxrenhcuqfprgpykqi.jpg',
-        headline: "What If Your Next Trek Changed Everything?",
-        subtitle: 'Join us on a mindfully designed trek experience that connects you to yourself. The person before and after the trek are rarely the same.',
-        ctaText: 'View Upcoming Treks',
+        eyebrow: 'YOUR NEXT ADVENTURE AWAITS',
+        headline: "Find Your Trail. Find Your Wild.",
+        subtitle: 'From peaceful alpine meadows to challenging Himalayan summits, discover a trek that matches your adventure.',
+        priceText: 'Starting from ₹6,499', // Will be dynamic based on lowestPrice
+        ctaText: 'EXPLORE TREKS →',
         ctaLink: '/upcoming-treks',
-        reviewText: "Join thousands of happy trekkers on our next adventure."
+        secondaryCtaText: 'FIND MY TREK',
+        secondaryCtaLink: '/upcoming-treks',
+        trustText: "Beginner Friendly • Expert Leaders • Small Groups"
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928865/hikingplanet/hero/z1jgr885bgldsswzv2fy.jpg',
-        headline: 'Conquer The White Wilderness',
-        subtitle: "Experience the magic of snow-covered peaks on Uttarakhand's most iconic winter treks. Mindfully curated for pure transformation.",
-        ctaText: 'View Winter Treks',
-        ctaLink: '/upcoming-treks?category=winter',
-        reviewText: "Join thousands of happy trekkers on our next adventure."
+        eyebrow: 'DAYARA BUGYAL • UTTARAKHAND',
+        headline: 'Walk Through Endless Himalayan Meadows',
+        subtitle: "A breathtaking 4-day journey through alpine meadows, oak forests and panoramic Himalayan views.",
+        priceText: 'Starting from ₹6,499',
+        ctaText: 'EXPLORE DAYARA BUGYAL →',
+        ctaLink: '/treks/dayara-bugyal-trek',
+        secondaryCtaText: 'TALK TO AN EXPERT',
+        secondaryCtaLink: 'https://wa.me/918556043708?text=Hi! I want to know more about the Dayara Bugyal Trek.',
+        trustText: "Beginner Friendly • 4 Days • Small Groups"
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928866/hikingplanet/hero/ndjx2tvzgigwyh4xaccq.jpg',
-        headline: 'Where Meadows Touch The Sky',
-        subtitle: 'Discover vast alpine bugyals, wildflowers, and panoramic Himalayan views that expand your horizons and clear your mind.',
-        ctaText: 'Explore Meadow Treks',
-        ctaLink: '/upcoming-treks?category=meadows',
-        reviewText: "Join thousands of happy trekkers on our next adventure."
+        eyebrow: 'KEDARKANTHA • UTTARAKHAND',
+        headline: 'Wake Up Above the Clouds',
+        subtitle: "Chase snow-covered trails, stunning sunrises and a summit experience you'll remember long after you return.",
+        priceText: 'Starting from ₹8,999',
+        ctaText: 'EXPLORE KEDARKANTHA →',
+        ctaLink: '/treks/kedarkantha-trek',
+        secondaryCtaText: 'VIEW BATCHES',
+        secondaryCtaLink: '/treks/kedarkantha-trek',
+        trustText: "6 Days • Summit Trek • Winter Favourite"
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928868/hikingplanet/hero/fgfib9vf635g2xib74ax.jpg',
-        headline: 'Adventure With Purpose',
-        subtitle: 'Small groups, expert guides, and journeys designed for meaningful exploration. Leave the mountains better than you found them.',
-        ctaText: 'View All Expeditions',
+        eyebrow: 'YOUR FIRST HIMALAYAN TREK',
+        headline: 'Never Trekked Before? Start Here.',
+        subtitle: "Your first trek doesn't have to be intimidating. Discover beginner-friendly trails with expert guidance every step of the way.",
+        ctaText: 'FIND MY TREK →',
         ctaLink: '/upcoming-treks',
-        reviewText: "Join thousands of happy trekkers on our next adventure."
+        secondaryCtaText: 'TALK TO AN EXPERT',
+        secondaryCtaLink: 'https://wa.me/918556043708?text=Hi! I am a beginner looking for my first Himalayan trek.',
+        trustText: "Beginner Friendly • Guided Treks • Small Groups"
     },
+    {
+        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785929316/hikingplanet/hero/tbcxrenhcuqfprgpykqi.jpg', // Reusing first image for emotional slide
+        eyebrow: 'THE MOUNTAINS ARE CALLING',
+        headline: 'Some Stories Are Meant to Be Lived.',
+        subtitle: "Leave the familiar behind, step into the mountains and come back with a story worth telling.",
+        ctaText: 'EXPLORE ALL TREKS →',
+        ctaLink: '/upcoming-treks',
+        secondaryCtaText: 'TALK ON WHATSAPP',
+        secondaryCtaLink: 'https://wa.me/918556043708',
+        trustText: "Himalayan Adventures • Local Expertise • Memorable Journeys"
+    }
 ];
 
-const SWIPE_THRESHOLD = 50;
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity;
+};
 
-// Image cross-fade variants
-const imageVariants = {
-    enter: { opacity: 0, scale: 1.03 },
-    center: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: 'easeOut' } },
-    exit: { opacity: 0, transition: { duration: 0.5, ease: 'easeIn' } },
+// Scene (Slide) transition variants
+const sceneVariants = {
+    enter: (direction: number) => {
+        return {
+            x: direction > 0 ? 1000 : -1000,
+            opacity: 0,
+            scale: 1.05
+        };
+    },
+    center: {
+        zIndex: 1,
+        x: 0,
+        opacity: 1,
+        scale: 1,
+        transition: {
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.8 },
+            scale: { duration: 0.8, ease: "easeOut" }
+        }
+    },
+    exit: (direction: number) => {
+        return {
+            zIndex: 0,
+            x: direction < 0 ? 1000 : -1000,
+            opacity: 0,
+            transition: {
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.5 }
+            }
+        };
+    }
+};
+
+const reducedSceneVariants = {
+    enter: { opacity: 0 },
+    center: { zIndex: 1, opacity: 1, transition: { duration: 0.8 } },
+    exit: { zIndex: 0, opacity: 0, transition: { duration: 0.8 } }
 };
 
 // Text stagger container
 const textContainer = {
-    hidden: {},
+    hidden: { opacity: 0 },
     show: {
-        transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+        opacity: 1,
+        transition: { staggerChildren: 0.1, delayChildren: 0.3 },
     },
 };
 
 // Each text piece slides up + fades in
 const textItem = {
-    hidden: { opacity: 0, y: 24 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
-export default function HeroBanner() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const touchStartX = useRef<number | null>(null);
+export default function HeroBanner({ lowestPrice = 6999, lowestPriceSlug = null }: { lowestPrice?: number, lowestPriceSlug?: string | null }) {
+    const [[page, direction], setPage] = useState([0, 0]);
+    const [isHovered, setIsHovered] = useState(false);
+    const shouldReduceMotion = useReducedMotion();
 
-    const goToPrevious = () =>
-        setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+    const slideIndex = Math.abs(page % slides.length);
+    const slide = slides[slideIndex];
 
-    const goToNext = () =>
-        setCurrentIndex((prev) => (prev + 1) % slides.length);
+    const paginate = useCallback((newDirection: number) => {
+        setPage([page + newDirection, newDirection]);
+    }, [page]);
 
-    const handleTouchStart = (e: React.TouchEvent) => {
-        touchStartX.current = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent) => {
-        if (touchStartX.current === null) return;
-        const diff = touchStartX.current - e.changedTouches[0].clientX;
-        if (Math.abs(diff) >= SWIPE_THRESHOLD) {
-            diff > 0 ? goToNext() : goToPrevious();
-        }
-        touchStartX.current = null;
-    };
-
-    const slide = slides[currentIndex];
+    // Autoplay logic
+    useEffect(() => {
+        if (isHovered) return;
+        const timer = setInterval(() => {
+            paginate(1);
+        }, 6000);
+        return () => clearInterval(timer);
+    }, [isHovered, paginate]);
 
     return (
         <div className="flex flex-col w-full select-none">
             {/* ── Main Hero Carousel ── */}
             <section
-                className="relative h-[380px] md:h-[450px] flex items-center overflow-hidden"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
+                className="relative h-[65vh] md:h-[60vh] min-h-[500px] md:min-h-[550px] overflow-hidden bg-black flex items-center"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
             >
-                {/* Animated background image */}
-                <AnimatePresence mode="sync">
+                <AnimatePresence initial={false} custom={direction}>
                     <motion.div
-                        key={`bg-${currentIndex}`}
-                        className="absolute inset-0"
-                        variants={imageVariants as any}
+                        key={page}
+                        custom={direction}
+                        variants={shouldReduceMotion ? reducedSceneVariants as any : sceneVariants as any}
                         initial="enter"
                         animate="center"
                         exit="exit"
+                        drag="x"
+                        dragConstraints={{ left: 0, right: 0 }}
+                        dragElastic={1}
+                        onDragEnd={(e, { offset, velocity }) => {
+                            const swipe = swipePower(offset.x, velocity.x);
+                            if (swipe < -swipeConfidenceThreshold) {
+                                paginate(1);
+                            } else if (swipe > swipeConfidenceThreshold) {
+                                paginate(-1);
+                            }
+                        }}
+                        className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing flex items-center"
                     >
+                        {/* Animated background image */}
                         <Image
                             src={slide.image}
                             alt={slide.headline}
                             fill
-                            priority={currentIndex === 0}
+                            priority={slideIndex === 0}
                             className="object-cover pointer-events-none"
                             quality={90}
                             draggable={false}
                         />
+
+                        {/* Dark gradient overlay for text readability (Left side bias) */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent pointer-events-none" />
+
+                        {/* Content */}
+                        <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full z-10 pointer-events-auto">
+                            <motion.div
+                                className="max-w-2xl text-white py-4 mt-8 md:mt-0"
+                                variants={textContainer}
+                                initial="hidden"
+                                animate="show"
+                            >
+                                {/* Eyebrow */}
+                                <motion.div variants={textItem} className="mb-4">
+                                    <span className="text-[#e30613] font-black tracking-widest text-[10px] sm:text-xs uppercase bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-sm border border-[#e30613]/30">
+                                        {slide.eyebrow}
+                                    </span>
+                                </motion.div>
+
+                                {/* Headline */}
+                                <motion.h1
+                                    variants={textItem}
+                                    className="text-4xl sm:text-5xl md:text-6xl font-black mb-5 leading-[1.1] tracking-tight text-white drop-shadow-lg"
+                                >
+                                    {slide.headline}
+                                </motion.h1>
+
+                                {/* Subtitle */}
+                                <motion.p
+                                    variants={textItem}
+                                    className="text-base sm:text-lg md:text-xl mb-4 opacity-95 font-medium leading-relaxed drop-shadow-md text-white/90"
+                                >
+                                    {slide.subtitle}
+                                </motion.p>
+
+                                {/* Price Anchor */}
+                                {slide.priceText && (
+                                    <motion.p
+                                        variants={textItem}
+                                        className="text-base sm:text-lg mb-8 opacity-95 font-bold leading-relaxed drop-shadow-md text-white"
+                                    >
+                                        {slideIndex === 0 ? `Starting from ₹${lowestPrice.toLocaleString('en-IN')}` : slide.priceText}
+                                    </motion.p>
+                                )}
+
+                                {/* Buttons */}
+                                <motion.div
+                                    variants={textItem}
+                                    className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 ${!slide.priceText ? 'mt-8' : ''}`}
+                                >
+                                    <Link
+                                        href={slide.ctaLink}
+                                        className="px-8 py-4 bg-[#e30613] text-white font-black rounded-lg shadow-xl shadow-black/20 hover:bg-[#c10510] hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wider w-full sm:w-auto text-center"
+                                    >
+                                        {slide.ctaText}
+                                    </Link>
+                                    
+                                    {slide.secondaryCtaText && (
+                                        <Link
+                                            href={slide.secondaryCtaLink}
+                                            className="px-8 py-4 bg-white/10 border border-white/30 backdrop-blur-sm text-white font-bold rounded-lg hover:bg-white/20 transition-all text-sm uppercase tracking-wider w-full sm:w-auto text-center"
+                                            target={slide.secondaryCtaLink.startsWith('http') ? '_blank' : undefined}
+                                        >
+                                            {slide.secondaryCtaText}
+                                        </Link>
+                                    )}
+                                </motion.div>
+
+                                {/* Trust Text */}
+                                <motion.div variants={textItem} className="mt-8 flex items-center gap-2 text-white/70 text-xs sm:text-sm font-bold tracking-wide uppercase">
+                                    <ShieldCheck weight="fill" className="text-[#e30613] w-5 h-5" />
+                                    <span>{slide.trustText}</span>
+                                </motion.div>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 </AnimatePresence>
 
-                {/* Dark overlay */}
-                <motion.div
-                    key={`overlay-${currentIndex}`}
-                    className="absolute inset-0 bg-black/40"
-                    initial={{ opacity: 0.6 }}
-                    animate={{ opacity: 0.45 }}
-                    transition={{ duration: 0.8 }}
-                />
-
                 {/* Navigation Arrows */}
                 <button
-                    onClick={goToPrevious}
-                    className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-sm transition-all focus:outline-none hidden sm:flex border border-white/20"
+                    onClick={() => paginate(-1)}
+                    className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all focus:outline-none hidden sm:flex border border-white/10 shadow-lg hover:scale-105"
                     aria-label="Previous slide"
                 >
                     <CaretLeft weight="bold" size={24} />
                 </button>
                 <button
-                    onClick={goToNext}
-                    className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-sm transition-all focus:outline-none hidden sm:flex border border-white/20"
+                    onClick={() => paginate(1)}
+                    className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all focus:outline-none hidden sm:flex border border-white/10 shadow-lg hover:scale-105"
                     aria-label="Next slide"
                 >
                     <CaretRight weight="bold" size={24} />
                 </button>
 
-                {/* Content */}
-                <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full z-10">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={`text-${currentIndex}`}
-                            className="max-w-3xl text-white py-4"
-                            variants={textContainer}
-                            initial="hidden"
-                            animate="show"
-                            exit={{ opacity: 0, y: -10, transition: { duration: 0.25 } }}
-                        >
-                            {/* Headline */}
-                            <motion.h1
-                                variants={textItem}
-                                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-[1.1] tracking-tight text-white drop-shadow-md"
-                            >
-                                {slide.headline}
-                            </motion.h1>
-
-                            {/* Subtitle */}
-                            <motion.p
-                                variants={textItem}
-                                className="text-sm sm:text-base md:text-lg mb-6 opacity-95 font-medium leading-relaxed drop-shadow max-w-2xl"
-                            >
-                                {slide.subtitle}
-                            </motion.p>
-
-                            {/* Button & Review Text */}
-                            <motion.div
-                                variants={textItem}
-                                className="flex flex-col items-start gap-3"
-                            >
-                                <Link
-                                    href={slide.ctaLink}
-                                    className="px-7 py-3.5 bg-[#e30613] text-white font-black rounded shadow-2xl hover:bg-[#c10510] transition-all text-xs md:text-sm uppercase tracking-wider"
-                                >
-                                    {slide.ctaText}
-                                </Link>
-
-                                <div className="mt-1">
-                                    <Link href="/reviews" className="text-white hover:text-[#e30613] font-bold underline text-xs sm:text-sm transition-colors drop-shadow">
-                                        {slide.reviewText}
-                                    </Link>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
-
                 {/* Dot indicators */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2.5">
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-3">
                     {slides.map((_, i) => (
-                        <motion.button
+                        <button
                             key={i}
-                            onClick={() => setCurrentIndex(i)}
+                            onClick={() => {
+                                const newDirection = i > slideIndex ? 1 : -1;
+                                setPage([i, newDirection]);
+                            }}
                             aria-label={`Go to slide ${i + 1}`}
-                            animate={{ width: i === currentIndex ? 32 : 12, opacity: i === currentIndex ? 1 : 0.6 }}
-                            transition={{ duration: 0.3, ease: 'easeOut' }}
-                            className={`h-2.5 rounded-full ${i === currentIndex ? 'bg-[#e30613]' : 'bg-white'}`}
+                            className={`h-2.5 transition-all duration-300 ease-out rounded-full ${i === slideIndex ? 'bg-[#e30613] w-8' : 'bg-white/60 hover:bg-white w-2.5'}`}
                         />
                     ))}
                 </div>

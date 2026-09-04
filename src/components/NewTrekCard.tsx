@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, MapPin } from '@phosphor-icons/react/dist/ssr';
+import { Heart, MapPin, WhatsappLogo } from '@phosphor-icons/react/dist/ssr';
 
 interface NewTrekCardProps {
     trek: {
@@ -62,13 +62,22 @@ export default function NewTrekCard({ trek }: NewTrekCardProps) {
                     </div>
                 </div>
 
-                <div className="mt-auto pt-2">
+                <div className="mt-auto pt-2 flex items-stretch gap-2">
                     <Link
                         href={`/treks/${trek.slug}`}
-                        className="block w-full text-center border-2 border-gray-100 text-gray-900 font-bold text-xs uppercase tracking-widest py-3 rounded-lg hover:border-gray-900 transition-colors"
+                        className="flex-1 flex items-center justify-center text-center border-2 border-gray-100 text-gray-900 font-bold text-[10px] sm:text-xs uppercase tracking-widest py-3 px-1 rounded-lg hover:border-gray-900 transition-colors"
                     >
                         View Trek Details
                     </Link>
+                    <a
+                        href={`https://wa.me/918556043708?text=Hi%21%20I%20am%20interested%20in%20the%20${encodeURIComponent(trek.title)}%20trek.%20Could%20you%20share%20more%20details%3F`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-shrink-0 w-12 flex items-center justify-center bg-[#25D366] text-white rounded-lg hover:bg-[#20b858] transition-colors shadow-sm"
+                        aria-label="Ask on WhatsApp"
+                    >
+                        <WhatsappLogo weight="fill" size={24} />
+                    </a>
                 </div>
             </div>
         </div>

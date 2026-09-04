@@ -70,12 +70,25 @@ function TrekCardsSkeleton() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const dbConnect = (await import('@/lib/db')).default;
+  const Trek = (await import('@/models/Trek')).default;
+
+  await dbConnect();
+  
+  // Find the lowest price active trek
+  const lowestPriceTrek = await Trek.findOne({ isActive: true })
+    .sort({ price: 1 })
+    .select('price slug')
+    .lean();
+
+  const lowestPrice = lowestPriceTrek?.price || 6999;
+  const lowestPriceSlug = lowestPriceTrek?.slug || null;
   return (
     <div className="bg-[#F4F1EA]">
       <LeadCapturePopup />
       {/* ── Hero ── */}
-      <HeroBanner />
+      <HeroBanner lowestPrice={lowestPrice} lowestPriceSlug={lowestPriceSlug} />
 
       {/* ── Plan Your Next Adventure ── */}
       <Suspense fallback={<TrekCardsSkeleton />}>

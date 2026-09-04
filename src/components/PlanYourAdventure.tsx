@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, CaretRight, CaretLeft, MapPin, Heart } from '@phosphor-icons/react/dist/ssr';
+import { SlidersHorizontal, CaretRight, CaretLeft, MapPin, Heart, WhatsappLogo } from '@phosphor-icons/react/dist/ssr';
 
 interface TrekItem {
     id: string;
@@ -153,12 +153,23 @@ export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?
                                         </div>
 
                                         {/* Action Button */}
-                                        <Link
-                                            href={`/treks/${trek.slug}`}
-                                            className="w-full py-2.5 px-4 rounded-lg border border-gray-300 text-slate-800 font-bold text-xs text-center hover:bg-slate-50 transition-colors block mt-auto uppercase tracking-wider shadow-sm"
-                                        >
-                                            View Trek Details
-                                        </Link>
+                                        <div className="mt-auto flex items-stretch gap-2">
+                                            <Link
+                                                href={`/treks/${trek.slug}`}
+                                                className="flex-1 flex items-center justify-center text-center py-2.5 px-2 rounded-lg border border-gray-300 text-slate-800 font-bold text-[10px] sm:text-xs hover:bg-slate-50 transition-colors uppercase tracking-wider shadow-sm"
+                                            >
+                                                View Trek Details
+                                            </Link>
+                                            <a
+                                                href={`https://wa.me/918556043708?text=Hi%21%20I%20am%20interested%20in%20the%20${encodeURIComponent(trek.title)}%20trek.%20Could%20you%20share%20more%20details%3F`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-shrink-0 w-11 sm:w-12 flex items-center justify-center bg-[#25D366] text-white rounded-lg hover:bg-[#20b858] transition-colors shadow-sm"
+                                                aria-label="Ask on WhatsApp"
+                                            >
+                                                <WhatsappLogo weight="fill" size={22} />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             );
