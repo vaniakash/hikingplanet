@@ -72,12 +72,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
             { name: 'Leadership Treks for Organizations', href: '/treks', desc: 'High-impact team building & corporate retreats' },
             { name: 'Family Outdoor Bootcamps', href: '/treks', desc: 'Safe, educational, and fun camping for families' },
         ],
-        articles: [
-            { name: 'Expert Trek Guides', href: '/blog', desc: 'Complete breakdown of trails, itineraries & difficulty' },
-            { name: 'Gear & Equipment Tips', href: '/blog', desc: 'How to choose backpacks, shoes, and layering systems' },
-            { name: 'Fitness & Training', href: '/blog', desc: 'Physical preparation & altitude acclimation guides' },
-            { name: 'Himalayan Lore & Culture', href: '/blog', desc: 'Stories, history, and traditions of indigenous mountain communities' },
-        ],
+
         documented: [
             { name: 'Uttarakhand Treks', href: '/treks?region=uttarakhand', desc: 'Explore Kedarkantha, Har Ki Dun, Dayara Bugyal & more' },
             { name: 'Himachal Treks', href: '/treks?region=himachal', desc: 'Hampta Pass, Bhrigu Lake, Pin Bhaba & scenic valleys' },
@@ -219,14 +214,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                     </button>
                 </div>
 
-                <div className="relative">
-                    <button
-                        onClick={() => toggleDropdown('articles')}
-                        className={`flex items-center gap-1 focus:outline-none transition-colors ${activeDropdown === 'articles' ? 'text-white/80' : 'hover:text-white/80'}`}
-                    >
-                        LATEST ARTICLES <CaretDown weight="bold" size={12} className={`transition-transform ${activeDropdown === 'articles' ? 'rotate-180' : ''}`} />
-                    </button>
-                </div>
+                <Link href="/latest-articles" className="hover:text-white/80 transition-colors py-1">LATEST ARTICLES</Link>
 
                 <div className="relative">
                     <button
@@ -442,20 +430,7 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
                                 )}
                             </div>
 
-                            {/* Latest Articles */}
-                            <div>
-                                <button onClick={() => toggleMobileTab('articles')} className="w-full p-4 flex items-center justify-between hover:bg-slate-50 focus:outline-none">
-                                    <span>Latest Articles</span>
-                                    <CaretDown size={14} weight="bold" className={`transition-transform ${activeMobileTab === 'articles' ? 'rotate-180' : ''}`} />
-                                </button>
-                                {activeMobileTab === 'articles' && (
-                                    <div className="bg-slate-50 px-6 py-2 flex flex-col gap-3 font-semibold text-slate-600 capitalize text-xs">
-                                        {submenus.articles.map((sub, i) => (
-                                            <Link key={i} href={sub.href} onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#C25E44]">{sub.name}</Link>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                            <Link href="/latest-articles" onClick={() => setMobileMenuOpen(false)} className="p-4 hover:bg-slate-50">Latest Articles</Link>
 
                             {/* Documented Treks */}
                             <div>

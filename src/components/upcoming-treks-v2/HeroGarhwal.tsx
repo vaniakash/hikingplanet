@@ -19,7 +19,7 @@ export default function HeroGarhwal({ treks }: { treks: any[] }) {
     };
 
     return (
-        <section className="relative w-full h-[90vh] min-h-[600px] flex flex-col justify-between bg-slate-900 mb-12">
+        <section className="relative w-full h-[60vh] min-h-[450px] flex flex-col justify-between bg-slate-900 mb-12">
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <Image
@@ -35,23 +35,14 @@ export default function HeroGarhwal({ treks }: { treks: any[] }) {
             {/* Hero Text */}
             <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-4 pt-20">
                 <span className="text-yellow-400 font-bold tracking-[0.3em] uppercase text-xs md:text-sm mb-4 drop-shadow-md">
-                    Uttarakhand, India
+                    Find Your Next Adventure
                 </span>
                 <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 drop-shadow-lg font-serif">
-                    Trek The Garhwal <br className="hidden md:block" /> Himalayas
+                    Explore All Treks
                 </h1>
                 <p className="text-lg md:text-xl text-white/90 max-w-2xl font-medium mb-10 drop-shadow">
-                    Curated treks across the most beautiful trails of Garhwal. Your next adventure starts here.
+                    Curated treks across the most beautiful trails of Garhwal.
                 </p>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                    <button className="bg-[#e30613] hover:bg-[#c10510] text-white px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-colors shadow-lg">
-                        Explore Treks
-                    </button>
-                    <button className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded font-bold uppercase tracking-wider text-sm transition-colors">
-                        Plan My Trek
-                    </button>
-                </div>
 
                 <div className="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-3 text-[10px] md:text-xs text-white/70 font-bold uppercase tracking-widest">
                     <span>{treks.length}+ Treks</span>

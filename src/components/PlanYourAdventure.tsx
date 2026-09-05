@@ -129,15 +129,17 @@ export default function PlanYourAdventure({ initialTreks = [] }: { initialTreks?
                                     {/* Content Container */}
                                     <div className="p-5 flex flex-col flex-grow bg-white">
                                         
-                                        {/* Title & Location Row */}
-                                        <div className="flex items-center justify-between gap-2 mb-4">
-                                            <h4 className="text-base font-black text-slate-900 group-hover:text-[#e30613] transition-colors flex-grow pr-2 truncate">
+                                        {/* Title & Location */}
+                                        <div className="flex flex-col gap-2 mb-4">
+                                            <h4 className="text-base font-black text-slate-900 group-hover:text-[#e30613] transition-colors leading-snug">
                                                 {trek.title}
                                             </h4>
-                                            <span className="bg-[#1C2B39] text-white text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 flex-shrink-0 shadow-sm">
-                                                <MapPin weight="fill" size={12} className="text-[#e30613]" />
-                                                {trek.location}
-                                            </span>
+                                            <div className="flex">
+                                                <span className="bg-[#e30613] text-white text-[10px] sm:text-[11px] font-bold px-2 py-1 sm:px-2.5 sm:py-1 rounded flex items-center gap-1 shadow-sm max-w-full">
+                                                    <MapPin weight="fill" size={12} className="text-white flex-shrink-0" />
+                                                    <span className="truncate">{trek.location}</span>
+                                                </span>
+                                            </div>
                                         </div>
 
                                         {/* Meta Info */}
