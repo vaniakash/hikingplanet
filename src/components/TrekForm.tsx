@@ -68,10 +68,13 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             const url = initialData ? `/api/treks/${initialData._id}` : '/api/treks';
             const method = initialData ? 'PUT' : 'POST';
 
+            // Filter out empty sections to avoid Mongoose validation errors
+            const validInfoSections = infoSections.filter(sec => sec.title && sec.title.trim() !== '');
+
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, infoIntro, infoSections }),
+                body: JSON.stringify({ ...formData, infoIntro, infoSections: validInfoSections }),
             });
 
             if (!res.ok) {

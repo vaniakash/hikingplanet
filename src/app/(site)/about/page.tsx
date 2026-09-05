@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="bg-white text-gray-900 selection:bg-red-600 selection:text-white font-sans">
 
             {/* ── Hero ── */}
-            <header className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden flex items-center justify-center text-center">
+            <header className="relative h-[50vh] md:h-[60vh] w-full overflow-hidden flex items-center justify-center text-center">
                 <div className="absolute inset-0">
                     <Image
                         src="/images/hero.webp"
@@ -28,15 +28,15 @@ export default function AboutPage() {
                 </div>
                 <div className="relative z-10 container mx-auto px-6 max-w-4xl">
                     <FadeIn>
-                        <span className="text-red-500 font-bold uppercase tracking-[0.3em] text-xs md:text-sm mb-6 block bg-white/10 backdrop-blur-md py-2 px-4 rounded-full inline-block border border-white/20">
+                        <span className="text-red-500 font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block bg-white/10 backdrop-blur-md py-2 px-4 rounded-full inline-block border border-white/20">
                             Our Story • Hiking Planet
                         </span>
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight tracking-tight mb-8">
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight mb-6">
                             Real trails.<br />
                             Real locals.<br />
                             <span className="text-red-500">Real India.</span>
                         </h1>
-                        <p className="mt-8 text-white/90 text-sm md:text-base uppercase tracking-[0.2em] font-semibold">
+                        <p className="mt-6 text-white/90 text-xs md:text-sm uppercase tracking-[0.2em] font-semibold">
                             From Raithal Village, Uttarkashi · Uttarakhand, India
                         </p>
                     </FadeIn>
@@ -102,11 +102,11 @@ export default function AboutPage() {
             </section>
 
             {/* ── Team Quote ── */}
-            <section className="py-28 bg-red-600 relative overflow-hidden text-center">
+            <section className="py-16 md:py-20 bg-red-600 relative overflow-hidden text-center">
                 <div className="absolute inset-0 bg-[url('/images/pattern-light.svg')] opacity-10 bg-repeat"></div>
                 <div className="container mx-auto px-6 max-w-4xl relative z-10">
                     <FadeIn>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-10 leading-snug tracking-tight">
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white mb-8 leading-snug tracking-tight">
                             &quot;We are a bunch of committed individuals who love to work as a team, with Uttarakhand at their heart. We firmly believe we are going to be the agents of change in Uttarakhand.&quot;
                         </h2>
                         <div className="flex flex-col items-center gap-3">
