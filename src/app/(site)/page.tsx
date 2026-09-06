@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import HeroBanner from '@/components/HeroBanner';
 import { CTASection, FeaturedTreksHeader } from '@/components/AnimatedSections';
 import LeadCapturePopup from '@/components/LeadCapturePopup';
+import TheHikingPlanetWay from '@/components/TheHikingPlanetWay';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -95,7 +96,8 @@ export default async function Home() {
         <FeaturedTreks />
       </Suspense>
 
-
+      {/* ── The Hiking Planet Way ── */}
+      <TheHikingPlanetWay />
 
       {/* ── CTA — animated blobs + staggered text ── */}
       <CTASection />
