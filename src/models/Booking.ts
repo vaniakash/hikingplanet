@@ -6,13 +6,20 @@ export interface IBooking {
         name: string;
         email: string;
         phone: string;
+        age?: number;
+        emergencyContact?: string;
     };
     trip: Types.ObjectId;
     trek: Types.ObjectId; // Denormalized for easier querying
     numberOfGuests: number;
+    additions: {
+        insurance: boolean;
+        backpackOffloading: boolean;
+    };
     totalAmount: number;
+    amountPaid: number;
     status: 'pending' | 'confirmed' | 'cancelled';
-    paymentStatus: 'pending' | 'paid' | 'failed'; // 'refunded' removed as per code edit
+    paymentStatus: 'pending' | 'paid' | 'failed' | 'partially_paid';
     paymentDetails?: {
         razorpayOrderId: string;
         razorpayPaymentId: string;
@@ -27,13 +34,20 @@ const BookingSchema = new Schema<IBooking>(
             name: { type: String, required: true },
             email: { type: String, required: true },
             phone: { type: String, required: true },
+            age: { type: Number },
+            emergencyContact: { type: String },
         },
         trip: { type: Schema.Types.ObjectId, ref: 'Trip', required: true },
         trek: { type: Schema.Types.ObjectId, ref: 'Trek', required: true },
         numberOfGuests: { type: Number, required: true, min: 1 },
+        additions: {
+            insurance: { type: Boolean, default: false },
+            backpackOffloading: { type: Boolean, default: false },
+        },
         totalAmount: { type: Number, required: true },
+        amountPaid: { type: Number, default: 0 },
         status: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' },
-        paymentStatus: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' }, // 'refunded' removed as per code edit
+        paymentStatus: { type: String, enum: ['pending', 'paid', 'failed', 'partially_paid'], default: 'pending' },
         paymentDetails: {
             razorpayOrderId: { type: String },
             razorpayPaymentId: { type: String },

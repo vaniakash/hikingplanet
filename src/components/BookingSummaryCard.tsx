@@ -132,27 +132,17 @@ export default function BookingSummaryCard({ price, originalPrice, trips, feeDet
                     )}
                 </div>
 
-                {/* Add-ons */}
-                <div className="mt-6 space-y-3">
-                    <p className="text-xs font-bold text-stone-500 uppercase tracking-widest mb-3">Optional Additions</p>
-                    {addOns?.map((addon, idx) => (
-                        <div key={idx} className="flex items-center gap-3 text-sm text-stone-700">
-                            <span className="font-bold font-mono">₹{addon.price.toLocaleString()}</span> {addon.name}
-                            <Info weight="duotone" size={16} className="text-stone-400 cursor-pointer" />
+                {/* Advance Booking Info */}
+                <div className="mt-6">
+                    <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3">
+                        <Info weight="fill" className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                        <div>
+                            <p className="text-sm font-bold text-red-900 mb-1">30% Advance Booking Fee</p>
+                            <p className="text-xs text-red-700 leading-relaxed">
+                                You only need to pay a 30% advance fee right now to confirm your slot. The remaining amount can be paid later.
+                            </p>
                         </div>
-                    ))}
-                    {!addOns?.length && (
-                        <>
-                            <div className="flex items-center gap-3 text-sm text-stone-600">
-                                <ShieldCheck weight="duotone" size={20} className="text-[#1f7a4c]" />
-                                <span className="font-bold text-stone-800">₹750</span> Insurance
-                            </div>
-                            <div className="flex items-center gap-3 text-sm text-stone-600">
-                                <Backpack weight="duotone" size={20} className="text-[#1f7a4c]" />
-                                <span className="font-bold text-stone-800">₹2,200</span> Backpack Offloading
-                            </div>
-                        </>
-                    )}
+                    </div>
                 </div>
 
                 {/* Info box */}

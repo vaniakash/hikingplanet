@@ -33,9 +33,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { tripId, guestDetails, numberOfGuests, totalAmount } = body;
+        const { tripId, guestDetails, numberOfGuests, additions } = body;
 
-        if (!tripId || !guestDetails || !numberOfGuests || !totalAmount) {
+        if (!tripId || !guestDetails || !numberOfGuests) {
             return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         // Here we will do simple check-then-act for MVP simplicity, but concurrent requests could race (Phase 9 polish).
 
         // 1. Fetch Trip
-        const trip = await Trip.findById(tripId);
+        const trip = await Trip.findById(tripId).populate('trek');
         if (!trip) {
             return NextResponse.json({ success: false, error: 'Trip not found' }, { status: 404 });
         }
@@ -56,13 +56,25 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Not enough seats available' }, { status: 400 });
         }
 
+        // Server-side Total Calculation
+        const insuranceCost = additions?.insurance ? 750 : 0;
+        const backpackCost = additions?.backpackOffloading ? 2200 : 0;
+        const baseCostPerPerson = (trip.trek as any).price + insuranceCost + backpackCost;
+        const totalBeforeGst = baseCostPerPerson * numberOfGuests;
+        const gst = totalBeforeGst * 0.05;
+        const calculatedTotalAmount = totalBeforeGst + gst;
+
         // 3. Create Booking
         const booking = await Booking.create({
             trip: tripId,
             trek: trip.trek, // Link trek for easier queries
             guestDetails,
             numberOfGuests,
-            totalAmount,
+            additions: {
+                insurance: !!additions?.insurance,
+                backpackOffloading: !!additions?.backpackOffloading
+            },
+            totalAmount: calculatedTotalAmount,
             status: 'pending',
             paymentStatus: 'pending'
         });

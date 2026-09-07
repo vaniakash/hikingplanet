@@ -27,9 +27,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Booking not found' }, { status: 404 });
         }
 
-        // Create Order
+        // Create Order (30% Advance)
+        const advanceAmount = Math.round(booking.totalAmount * 0.30);
         const options = {
-            amount: booking.totalAmount * 100, // Amount in paise
+            amount: advanceAmount * 100, // Amount in paise
             currency: 'INR',
             receipt: booking._id.toString(),
             notes: {

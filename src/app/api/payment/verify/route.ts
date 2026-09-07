@@ -26,11 +26,14 @@ export async function POST(request: Request) {
         await dbConnect();
         const booking = await Booking.findById(bookingId);
         if (booking) {
+            // Update booking status
             booking.status = 'confirmed';
-            booking.paymentStatus = 'paid';
+            booking.paymentStatus = 'partially_paid';
+            booking.amountPaid = Math.round(booking.totalAmount * 0.30);
             booking.paymentDetails = {
                 razorpayOrderId: orderCreationId,
-                razorpayPaymentId: razorpayPaymentId,
+                razorpayPaymentId,
+                razorpaySignature
             };
             await booking.save();
         }

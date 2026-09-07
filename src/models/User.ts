@@ -5,6 +5,15 @@ export interface IUser {
     password?: string;
     name?: string;
     role: 'user' | 'admin';
+    isVerified: boolean;
+    profileComplete: boolean;
+    age?: number;
+    gender?: string;
+    emergencyContact?: {
+        name: string;
+        phone: string;
+    };
+    medicalNotes?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -12,9 +21,18 @@ export interface IUser {
 const UserSchema = new Schema<IUser>(
     {
         email: { type: String, required: true, unique: true },
-        password: { type: String, select: false }, // Password optional for OAuth in future, but select: false for security
+        password: { type: String, select: false },
         name: { type: String },
         role: { type: String, enum: ['user', 'admin'], default: 'user' },
+        isVerified: { type: Boolean, default: false },
+        profileComplete: { type: Boolean, default: false },
+        age: { type: Number },
+        gender: { type: String },
+        emergencyContact: {
+            name: { type: String },
+            phone: { type: String }
+        },
+        medicalNotes: { type: String }
     },
     { timestamps: true }
 );
