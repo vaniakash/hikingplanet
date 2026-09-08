@@ -36,13 +36,34 @@ const enquirySchema = new mongoose.Schema(
     },
     experience: {
       type: String,
-      enum: ['Beginner', 'Intermediate', 'Experienced', ''],
+      enum: ['Beginner', 'Moderate', 'Intermediate', 'Experienced', ''],
       default: '',
     },
     message: {
       type: String,
       required: false,
     },
+    // New Fields for Gidara Bugyal Campaign / Generic Lead Capture
+    age: {
+      type: String,
+      required: false,
+    },
+    hasTrekBefore: {
+      type: String,
+      required: false,
+    },
+    medicalCondition: {
+      type: String,
+      required: false,
+    },
+    source: {
+      type: String,
+      required: false,
+    },
+    helpNeeded: [{
+      type: String,
+    }],
+    // Admin Fields
     status: {
       type: String,
       enum: ['New', 'Contacted', 'Interested', 'Confirmed', 'Cancelled', 'Payment Pending'],

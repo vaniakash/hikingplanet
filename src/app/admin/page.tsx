@@ -1,14 +1,35 @@
-'use client';
-
 import Link from 'next/link';
 import { Mountain, TrendingUp, Users, Calendar, Settings } from 'lucide-react';
+import dbConnect from '@/lib/db';
+import Trek from '@/models/Trek';
+import Booking from '@/models/Booking';
+import User from '@/models/User';
 
-export default function AdminDashboard() {
+export const dynamic = 'force-dynamic';
+
+export default async function AdminDashboard() {
+    await dbConnect();
+    const totalTreks = await Trek.countDocuments();
+    const activeBookings = await Booking.countDocuments({ status: { $ne: 'cancelled' } });
+    const customers = await User.countDocuments();
+    
+    const revenueResult = await Booking.aggregate([
+        { $match: { status: { $ne: 'cancelled' } } },
+        { $group: { _id: null, total: { $sum: "$amountPaid" } } }
+    ]);
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+    
+    const formattedRevenue = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(totalRevenue);
+
     const stats = [
-        { label: 'Total Treks', value: '5', icon: Mountain, color: 'violet' },
-        { label: 'Active Bookings', value: '12', icon: Calendar, color: 'blue' },
-        { label: 'Total Revenue', value: '₹1.2L', icon: TrendingUp, color: 'green' },
-        { label: 'Customers', value: '48', icon: Users, color: 'orange' },
+        { label: 'Total Treks', value: totalTreks.toString(), icon: Mountain, color: 'violet' },
+        { label: 'Active Bookings', value: activeBookings.toString(), icon: Calendar, color: 'blue' },
+        { label: 'Total Revenue', value: formattedRevenue, icon: TrendingUp, color: 'green' },
+        { label: 'Customers', value: customers.toString(), icon: Users, color: 'orange' },
     ];
 
     return (

@@ -6,7 +6,10 @@ import { Enquiry } from '@/models/Enquiry';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, mobile, email, city, trek, month, trekkers, experience, message, source } = body;
+    const { 
+      name, mobile, email, city, trek, month, trekkers, experience, message, source,
+      age, hasTrekBefore, medicalCondition, helpNeeded
+    } = body;
 
     if (!name || !mobile || !email) {
       return NextResponse.json(
@@ -27,6 +30,11 @@ export async function POST(req: Request) {
       trekkers,
       experience,
       message,
+      source,
+      age,
+      hasTrekBefore,
+      medicalCondition,
+      helpNeeded,
     });
 
     // Configure Nodemailer
@@ -38,9 +46,12 @@ export async function POST(req: Request) {
       },
     });
 
-    const subject = source === 'butter-festival' 
-      ? '🏔️ New Butter Festival Registration – HikingPlanet' 
-      : '🏔️ New Trek Enquiry – HikingPlanet';
+    let subject = '🏔️ New Trek Enquiry – HikingPlanet';
+    if (source === 'butter-festival') {
+      subject = '🏔️ New Butter Festival Registration – HikingPlanet';
+    } else if (source === 'gidara-bugyal-ad') {
+      subject = '🏔️ New Gidara Bugyal Campaign Lead – HikingPlanet';
+    }
 
     const mailOptions = {
       from: process.env.SMTP_EMAIL,
@@ -51,12 +62,17 @@ export async function POST(req: Request) {
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Mobile:</strong> ${mobile}</p>
         <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Age:</strong> ${age || 'Not specified'}</p>
         <p><strong>City:</strong> ${city || 'Not specified'}</p>
         <p><strong>Trek/Event:</strong> ${trek || 'Not specified'}</p>
         <p><strong>Preferred Month/Date:</strong> ${month || 'Not specified'}</p>
         <p><strong>Number of Trekkers:</strong> ${trekkers || 'Not specified'}</p>
+        <p><strong>Done a trek before?:</strong> ${hasTrekBefore || 'Not specified'}</p>
         <p><strong>Experience Level:</strong> ${experience || 'Not specified'}</p>
+        <p><strong>Medical Condition:</strong> ${medicalCondition || 'None'}</p>
+        <p><strong>Help Needed With:</strong> ${helpNeeded ? helpNeeded.join(', ') : 'Not specified'}</p>
         <p><strong>Message:</strong><br/>${message || 'None'}</p>
+        <p><strong>Source:</strong> ${source || 'Website'}</p>
         <hr/>
         <p><strong>Date Received:</strong> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
       `,

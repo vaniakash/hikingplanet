@@ -4,7 +4,7 @@ import { verifyJWT } from '@/lib/auth';
 
 const publicAdminPaths = ['/admin/login'];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
     // ── Admin protection ──────────────────────────────────────────────────────
