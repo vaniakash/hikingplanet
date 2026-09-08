@@ -20,16 +20,16 @@ const slides = [
         trustText: "Beginner Friendly • Expert Leaders • Small Groups"
     },
     {
-        image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928865/hikingplanet/hero/z1jgr885bgldsswzv2fy.jpg',
-        eyebrow: 'DAYARA BUGYAL • UTTARAKHAND',
-        headline: 'Walk Through Endless Himalayan Meadows',
-        subtitle: "A breathtaking 4-day journey through alpine meadows, oak forests and panoramic Himalayan views.",
-        priceText: 'Starting from ₹6,499',
-        ctaText: 'EXPLORE DAYARA BUGYAL →',
-        ctaLink: '/treks/dayara-bugyal-trek',
+        image: '/campaign/gidara5.webp',
+        eyebrow: 'GIDARA BUGYAL • UTTARAKHAND',
+        headline: 'Join the Ultimate High-Altitude Meadow Trek',
+        subtitle: "A breathtaking journey through India's largest and most spectacular alpine meadows. Starting 19th September.",
+        priceText: 'Few Seats Available',
+        ctaText: 'REGISTER NOW →',
+        ctaLink: '/campaign/gidara-bugyal',
         secondaryCtaText: 'TALK TO AN EXPERT',
-        secondaryCtaLink: 'https://wa.me/918556043708?text=Hi! I want to know more about the Dayara Bugyal Trek.',
-        trustText: "Beginner Friendly • 4 Days • Small Groups"
+        secondaryCtaLink: 'https://wa.me/918556043708?text=Hi! I want to know more about the Gidara Bugyal Trek.',
+        trustText: "Experienced Trekkers • High Altitude • Small Groups"
     },
     {
         image: 'https://res.cloudinary.com/djiwbsioo/image/upload/v1785928866/hikingplanet/hero/ndjx2tvzgigwyh4xaccq.jpg',
@@ -304,13 +304,13 @@ export default function HeroBanner({ lowestPrice = 6999, lowestPriceSlug = null 
                             <Megaphone weight="fill" className="w-5 h-5" />
                         </div>
                         <span className="font-extrabold text-slate-900">
-                            Registrations are now open for the Dayara Bugyal Trek — walk through endless alpine meadows with breathtaking Himalayan views.
+                            Registrations are now open for the Gidara Bugyal Trek (Starting 19 Sep) — join the ultimate high-altitude meadow trek!
                         </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5 font-semibold text-slate-700 md:text-right flex-shrink-0">
-                        <span>Limited seats available.</span>
-                        <Link href="/treks/dayara-bugyal-trek" className="text-[#0066CC] hover:text-[#004d99] underline font-bold transition-colors ml-1">
-                            Explore the Trek →
+                        <span>Few seats available.</span>
+                        <Link href="/campaign/gidara-bugyal" className="text-[#0066CC] hover:text-[#004d99] underline font-bold transition-colors ml-1">
+                            Register Now →
                         </Link>
                     </div>
                 </div>
