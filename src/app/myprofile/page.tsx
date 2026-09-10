@@ -60,12 +60,20 @@ export default function MyProfilePage() {
                         <h1 className="text-2xl font-black text-slate-900">My Profile</h1>
                         <p className="text-slate-500 mt-1">{user.email}</p>
                     </div>
-                    <button 
-                        onClick={handleLogout}
-                        className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors"
-                    >
-                        Logout
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <Link 
+                            href="/"
+                            className="px-4 py-2 bg-slate-100 text-slate-700 font-bold rounded-lg hover:bg-slate-200 transition-colors"
+                        >
+                            Home
+                        </Link>
+                        <button 
+                            onClick={handleLogout}
+                            className="px-4 py-2 bg-red-50 text-[#e30613] font-bold rounded-lg hover:bg-red-100 transition-colors"
+                        >
+                            Logout
+                        </button>
+                    </div>
                 </div>
                 
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
