@@ -212,6 +212,22 @@ export default function BookingSummaryCard({ price, originalPrice, trips, feeDet
                                                                 {!avail.isFull && (
                                                                     <Link
                                                                         href={`/book/${trip._id}`}
+                                                                        onClick={() => {
+                                                                            const pathSegments = window.location.pathname.split('/');
+                                                                            const trekSlug = pathSegments[pathSegments.length - 1];
+                                                                            fetch('/api/analytics', {
+                                                                                method: 'POST',
+                                                                                headers: { 'Content-Type': 'application/json' },
+                                                                                body: JSON.stringify({
+                                                                                    campaignId: 'global',
+                                                                                    eventName: 'trek_cta_click',
+                                                                                    metadata: {
+                                                                                        tripId: trip._id,
+                                                                                        trekSlug: trekSlug,
+                                                                                    }
+                                                                                }),
+                                                                            }).catch(console.error);
+                                                                        }}
                                                                         className="px-3 py-1.5 bg-[#1f7a4c] hover:bg-[#166534] text-white text-xs font-bold rounded-lg shadow-sm hover:shadow-md transition-all whitespace-nowrap"
                                                                     >
                                                                         Book

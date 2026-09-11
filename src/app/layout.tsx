@@ -147,6 +147,8 @@ const orgJsonLd = {
   },
 };
 
+import PageTracker from "@/components/PageTracker";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -174,6 +176,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}
       >
+        <PageTracker />
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-Z9CW4VK4KX"
