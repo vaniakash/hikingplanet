@@ -1,5 +1,17 @@
 import mongoose from 'mongoose';
 
+// Register all models early to prevent "Schema hasn't been registered for model" errors in serverless environments (Vercel).
+import '@/models/AnalyticsEvent';
+import '@/models/Booking';
+import '@/models/Enquiry';
+import '@/models/Notification';
+import '@/models/OtpToken';
+import '@/models/Review';
+import '@/models/Trek';
+import '@/models/Trip';
+import '@/models/User';
+import '@/models/Wishlist';
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
