@@ -93,28 +93,6 @@ export default function BookingPage(props: { params: Promise<{ tripId: string }>
         return { trekTotal, insuranceTotal, backpackTotal, subTotal, gst, finalTotal };
     };
 
-    // Load Razorpay Script
-    useEffect(() => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-        script.async = true;
-        document.body.appendChild(script);
-    }, []);
-
-    const loadRazorpay = () => {
-        return new Promise((resolve) => {
-            if ((window as any).Razorpay) {
-                resolve(true);
-                return;
-            }
-            const script = document.createElement('script');
-            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-            script.onload = () => resolve(true);
-            script.onerror = () => resolve(false);
-            document.body.appendChild(script);
-        });
-    };
-
     const handlePaymentSubmit = async () => {
         setSubmitting(true);
         setError('');
@@ -144,14 +122,48 @@ export default function BookingPage(props: { params: Promise<{ tripId: string }>
                 throw new Error(json.error || 'Booking failed');
             }
 
-            // 2. We skip Razorpay and directly confirm the booking
-            setConfirmedBooking({
-                bookingId: json.data._id,
-                traveler: traveler.name,
-                age: traveler.age,
-                amountPaid: getTotals().finalTotal
+            // 2. Initialize PayU for this booking
+            const payuRes = await fetch('/api/payu/init-booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bookingId: json.data._id }),
             });
-            setStep(4);
+            const payuData = await payuRes.json();
+
+            if (!payuRes.ok) {
+                throw new Error(payuData.error || 'Payment initialization failed');
+            }
+
+            // 3. Create dynamic form and submit to PayU
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = payuData.payuUrl;
+
+            const fields: Record<string, string> = {
+                key: payuData.key,
+                txnid: payuData.txnid,
+                amount: payuData.amount,
+                productinfo: payuData.productinfo,
+                firstname: payuData.firstname,
+                email: payuData.email,
+                phone: payuData.phone,
+                surl: payuData.surl,
+                furl: payuData.furl,
+                hash: payuData.hash,
+                udf1: payuData.udf1,
+                udf2: payuData.udf2
+            };
+
+            Object.keys(fields).forEach((key) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = fields[key];
+                form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
             
         } catch (err: any) {
             setError(err.message);
@@ -358,26 +370,15 @@ export default function BookingPage(props: { params: Promise<{ tripId: string }>
                                 </div>
                                 
                                 <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center shadow-inner">
-                                    <p className="text-sm font-bold text-blue-900 mb-2 uppercase tracking-wide">Pay via UPI to Secure Slot</p>
-                                    <p className="text-gray-600 text-sm mb-6">Send the advance amount to the UPI ID below, then click "I have paid" to generate your ticket.</p>
-                                    
-                                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm inline-block mb-6">
-                                        <p className="font-mono text-lg text-gray-900 font-bold select-all tracking-tight">straw.hatrajan-1@oksbi</p>
-                                    </div>
-                                    
-                                    <a
-                                        href={`upi://pay?pa=straw.hatrajan-1@oksbi&pn=HikingPlanet&am=${Math.round(finalTotal * 0.30)}`}
-                                        className="w-full bg-[#1f7a4c] hover:bg-[#166534] text-white font-bold py-3.5 rounded-xl transition-all shadow-sm hover:shadow-md flex justify-center items-center gap-2 mb-4"
-                                    >
-                                        Open UPI App to Pay ₹{Math.round(finalTotal * 0.30).toLocaleString()}
-                                    </a>
+                                    <p className="text-sm font-bold text-blue-900 mb-2 uppercase tracking-wide">Pay Advance to Secure Slot</p>
+                                    <p className="text-gray-600 text-sm mb-6">Click below to proceed to the secure payment gateway to pay your 30% advance fee.</p>
 
                                     <button
                                         onClick={handlePaymentSubmit}
                                         disabled={submitting}
                                         className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-bold py-3.5 rounded-xl transition-all shadow-sm flex justify-center items-center"
                                     >
-                                        {submitting ? <Loader2 className="animate-spin w-5 h-5" /> : 'I have paid the advance'}
+                                        {submitting ? <Loader2 className="animate-spin w-5 h-5" /> : 'Proceed to Payment (PayU)'}
                                     </button>
                                 </div>
                             </div>

@@ -48,6 +48,45 @@ export default function TrekForm({ initialData }: TrekFormProps) {
     const updateSection = (i: number, field: 'title' | 'subtitle' | 'content' | 'imageUrl', value: string) =>
         setInfoSections(prev => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
 
+    // Trail Highlights (timeline items)
+    const emptyHighlight = { title: '', description: '' };
+    const [highlights, setHighlights] = useState<{ title: string; description: string }[]>(
+        (initialData?.highlights || []).map((h: any) => ({
+            title: h.title || '', description: h.description || ''
+        }))
+    );
+    const addHighlight = () => setHighlights(prev => [...prev, { ...emptyHighlight }]);
+    const removeHighlight = (i: number) => setHighlights(prev => prev.filter((_, idx) => idx !== i));
+    const updateHighlight = (i: number, field: 'title' | 'description', value: string) =>
+        setHighlights(prev => prev.map((h, idx) => idx === i ? { ...h, [field]: value } : h));
+
+    const emptyItinerary = { day: 1, title: '', description: '', distance: '', durationInfo: '' };
+    const [itinerary, setItinerary] = useState<{ day: number; title: string; description: string; distance: string; durationInfo: string }[]>(
+        (initialData?.itinerary || []).map((i: any) => ({
+            day: i.day || 1, title: i.title || '', description: i.description || '', distance: i.distance || '', durationInfo: i.durationInfo || ''
+        }))
+    );
+    const emptyDetailedItinerary = { day: 1, title: '', driveDuration: '', trekDuration: '', trekDistance: '', altitude: '', ascent: '', waterSources: '', description: '', images: [] };
+    const [detailedItinerary, setDetailedItinerary] = useState<{ day: number; title: string; driveDuration?: string; trekDuration?: string; trekDistance?: string; altitude?: string; ascent?: string; waterSources?: string; description?: string; images?: string[] }[]>(
+        (initialData?.detailedItinerary || []).map((i: any) => ({
+            day: i.day || 1, title: i.title || '', driveDuration: i.driveDuration || '', trekDuration: i.trekDuration || '', trekDistance: i.trekDistance || '', altitude: i.altitude || '', ascent: i.ascent || '', waterSources: i.waterSources || '', description: i.description || '', images: i.images || []
+        }))
+    );
+
+    const [routeMap, setRouteMap] = useState<string>(initialData?.routeMap || '');
+    
+    // Quick Itinerary Handlers
+    const addItineraryDay = () => setItinerary(prev => [...prev, { ...emptyItinerary, day: prev.length + 1 }]);
+    const removeItineraryDay = (i: number) => setItinerary(prev => prev.filter((_, idx) => idx !== i).map((item, idx) => ({ ...item, day: idx + 1 })));
+    const updateItineraryDay = (i: number, field: string, value: string | number) =>
+        setItinerary(prev => prev.map((item, idx) => idx === i ? { ...item, [field]: value } : item));
+
+    // Detailed Itinerary Handlers
+    const addDetailedDay = () => setDetailedItinerary(prev => [...prev, { ...emptyDetailedItinerary, day: prev.length + 1 }]);
+    const removeDetailedDay = (i: number) => setDetailedItinerary(prev => prev.filter((_, idx) => idx !== i).map((item, idx) => ({ ...item, day: idx + 1 })));
+    const updateDetailedDay = (i: number, field: string, value: string | number | string[]) =>
+        setDetailedItinerary(prev => prev.map((item, idx) => idx === i ? { ...item, [field]: value } : item));
+
     const [error, setError] = useState('');
 
     const handleChange = (e: any) => {
@@ -70,11 +109,14 @@ export default function TrekForm({ initialData }: TrekFormProps) {
 
             // Filter out empty sections to avoid Mongoose validation errors
             const validInfoSections = infoSections.filter(sec => sec.title && sec.title.trim() !== '');
+            const validHighlights = highlights.filter(h => h.title && h.title.trim() !== '');
+            const validItinerary = itinerary.filter(i => i.title && i.title.trim() !== '');
+            const validDetailedItinerary = detailedItinerary.filter(i => i.title && i.title.trim() !== '');
 
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, infoIntro, infoSections: validInfoSections }),
+                body: JSON.stringify({ ...formData, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
             });
 
             if (!res.ok) {
@@ -322,7 +364,303 @@ export default function TrekForm({ initialData }: TrekFormProps) {
                     <ImageIcon className="w-5 h-5 text-green-500" />
                     Media Gallery
                 </h3>
-                <ImageUpload value={formData.images} onChange={handleImagesChange} disabled={loading} />
+                <ImageUpload value={formData.images} onChange={handleImagesChange} disabled={loading} maxImages={15} />
+            </div>
+
+            {/* Trail Highlights Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-rose-500" />
+                        Trail Highlights
+                        <span className="text-sm font-normal text-gray-400 ml-1">(timeline list)</span>
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={addHighlight}
+                        className="flex items-center gap-2 px-4 py-2 bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 transition text-sm font-medium border border-rose-200 dark:border-rose-800"
+                    >
+                        <Plus className="w-4 h-4" /> Add Highlight
+                    </button>
+                </div>
+
+                {highlights.length === 0 ? (
+                    <div className="text-center py-10 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                        <MapPin className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                        <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">No highlights yet</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Click "Add Highlight" to create timeline items</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {highlights.map((h, i) => (
+                            <div key={i} className="flex gap-4 items-start bg-gray-50 dark:bg-gray-900/40 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <label className={labelClasses}>Highlight Title *</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Starting Your Trek at Gangotri"
+                                            value={h.title}
+                                            onChange={e => updateHighlight(i, 'title', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Highlight Description</label>
+                                        <textarea
+                                            rows={2}
+                                            placeholder="e.g. At 10,000 ft, Gangotri is one of the highest starting points..."
+                                            value={h.description}
+                                            onChange={e => updateHighlight(i, 'description', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeHighlight(i)}
+                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition shrink-0 mt-7"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Quick Itinerary Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-indigo-500" />
+                        Quick Itinerary
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={addItineraryDay}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition text-sm font-medium border border-indigo-200 dark:border-indigo-800"
+                    >
+                        <Plus className="w-4 h-4" /> Add Day
+                    </button>
+                </div>
+
+                <div className="mb-6">
+                    <label className={labelClasses}>Trek Route Map <span className="text-gray-400 font-normal normal-case">(optional)</span></label>
+                    <ImageUpload
+                        value={routeMap ? [routeMap] : []}
+                        onChange={(urls: string[]) => setRouteMap(urls[0] || '')}
+                        disabled={loading}
+                    />
+                </div>
+
+                {itinerary.length === 0 ? (
+                    <div className="text-center py-10 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                        <MapPin className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                        <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">No itinerary yet</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Click "Add Day" to create itinerary days</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {itinerary.map((item, i) => (
+                            <div key={i} className="flex gap-4 items-start bg-gray-50 dark:bg-gray-900/40 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                                <div className="w-16 shrink-0 mt-8 text-center font-bold text-indigo-600 dark:text-indigo-400">
+                                    DAY {item.day}
+                                </div>
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <label className={labelClasses}>Day Title *</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Trek from Gangotri to Chirbasa"
+                                            value={item.title}
+                                            onChange={e => updateItineraryDay(i, 'title', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className={labelClasses}>Distance</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 10 km"
+                                                value={item.distance}
+                                                onChange={e => updateItineraryDay(i, 'distance', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Duration</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 6 hours"
+                                                value={item.durationInfo}
+                                                onChange={e => updateItineraryDay(i, 'durationInfo', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Description</label>
+                                        <textarea
+                                            rows={2}
+                                            placeholder="e.g. Moderate. Initial 300 m steep ascent..."
+                                            value={item.description}
+                                            onChange={e => updateItineraryDay(i, 'description', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeItineraryDay(i)}
+                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition shrink-0 mt-7"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Journey Breakdown Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-red-500" />
+                        Journey Breakdown
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={addDetailedDay}
+                        className="text-sm bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold px-4 py-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition"
+                    >
+                        + Add Day
+                    </button>
+                </div>
+
+                {detailedItinerary.length === 0 ? (
+                    <div className="text-center py-10 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                        <MapPin className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                        <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">No journey breakdown yet</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Click "Add Day" to create journey breakdown days</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {detailedItinerary.map((item, i) => (
+                            <div key={i} className="flex gap-4 items-start bg-gray-50 dark:bg-gray-900/40 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+                                <div className="w-16 shrink-0 mt-8 text-center font-bold text-red-600 dark:text-red-400">
+                                    DAY {item.day}
+                                </div>
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <label className={labelClasses}>Day Title *</label>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. Day 1: Reach Gangotri"
+                                            value={item.title}
+                                            onChange={e => updateDetailedDay(i, 'title', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className={labelClasses}>Drive Duration</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 10-12 hours drive from Dehradun"
+                                                value={item.driveDuration || ''}
+                                                onChange={e => updateDetailedDay(i, 'driveDuration', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Trek Duration</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 6-7 hours"
+                                                value={item.trekDuration || ''}
+                                                onChange={e => updateDetailedDay(i, 'trekDuration', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className={labelClasses}>Trek Distance</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 8 km"
+                                                value={item.trekDistance || ''}
+                                                onChange={e => updateDetailedDay(i, 'trekDistance', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Altitude (or Altitude Gain)</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. 11,630 ft to 12,415 ft (3,789 m)"
+                                                value={item.altitude || ''}
+                                                onChange={e => updateDetailedDay(i, 'altitude', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className={labelClasses}>Terrain / Ascent</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. Moderate. Initial 100 m ascent..."
+                                                value={item.ascent || ''}
+                                                onChange={e => updateDetailedDay(i, 'ascent', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Water Sources</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g. None. Carry 2 litres of water"
+                                                value={item.waterSources || ''}
+                                                onChange={e => updateDetailedDay(i, 'waterSources', e.target.value)}
+                                                className={inputClasses}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Detailed Description</label>
+                                        <textarea
+                                            rows={4}
+                                            placeholder="Detailed paragraphs explaining the day in depth..."
+                                            value={item.description || ''}
+                                            onChange={e => updateDetailedDay(i, 'description', e.target.value)}
+                                            className={inputClasses}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Day Images <span className="text-gray-400 font-normal normal-case">(up to 4 images for masonry grid)</span></label>
+                                        <ImageUpload
+                                            value={item.images || []}
+                                            onChange={(urls: string[]) => updateDetailedDay(i, 'images', urls)}
+                                            disabled={loading}
+                                            maxImages={4}
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeDetailedDay(i)}
+                                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition shrink-0 mt-7"
+                                >
+                                    <Trash2 className="w-5 h-5" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Complete Trek Info Accordion Card */}

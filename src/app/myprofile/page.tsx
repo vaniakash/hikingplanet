@@ -79,52 +79,60 @@ export default function DashboardHome() {
             </div>
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Completed */}
-                <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex items-start gap-5">
-                    <div className="w-14 h-14 bg-[#f0fdf4] rounded-[16px] flex items-center justify-center shrink-0">
-                        <CheckCircle2 className="w-7 h-7 text-[#10b981]" />
+                <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
                     </div>
                     <div>
-                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 leading-tight">TREKS<br/>COMPLETED</p>
-                        <p className="text-4xl font-bold text-slate-900 leading-none mb-3">{stats.completedTreks || 0}</p>
-                        <p className="text-xs font-bold text-[#10b981]">+2 this year</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Completed</p>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 leading-none">{stats.completedTreks || 0}</p>
+                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md self-start sm:self-auto">+2 this yr</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Upcoming */}
-                <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex items-start gap-5">
-                    <div className="w-14 h-14 bg-[#eff6ff] rounded-[16px] flex items-center justify-center shrink-0">
-                        <Calendar className="w-7 h-7 text-[#3b82f6]" />
+                <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                        <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                     </div>
                     <div>
-                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 leading-tight">UPCOMING<br/>TREKS</p>
-                        <p className="text-4xl font-bold text-slate-900 leading-none mb-3">{stats.upcomingTreks || 0}</p>
-                        <p className="text-xs font-bold text-[#3b82f6]">Departing in<br/>12 days</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Upcoming</p>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 leading-none">{stats.upcomingTreks || 0}</p>
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md self-start sm:self-auto">In 12 days</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Saved */}
-                <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex items-start gap-5">
-                    <div className="w-14 h-14 bg-[#fdf2f8] rounded-[16px] flex items-center justify-center shrink-0">
-                        <Heart className="w-7 h-7 text-[#ec4899]" />
+                <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-50 rounded-xl flex items-center justify-center shrink-0">
+                        <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
                     </div>
                     <div>
-                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 leading-tight">SAVED<br/>TREKS</p>
-                        <p className="text-4xl font-bold text-slate-900 leading-none mb-3">{stats.savedTreks || 0}</p>
-                        <p className="text-xs font-bold text-[#e30613]">3 on promo</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Saved</p>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 leading-none">{stats.savedTreks || 0}</p>
+                            <span className="text-[10px] font-bold text-pink-600 bg-pink-50 px-1.5 py-0.5 rounded-md self-start sm:self-auto">3 on promo</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* Reviews */}
-                <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex items-start gap-5">
-                    <div className="w-14 h-14 bg-[#fffbeb] rounded-[16px] flex items-center justify-center shrink-0">
-                        <Star className="w-7 h-7 text-[#f59e0b]" />
+                <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-50 rounded-xl flex items-center justify-center shrink-0">
+                        <Star className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
                     </div>
                     <div>
-                        <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 leading-tight">REVIEWS</p>
-                        <p className="text-4xl font-bold text-slate-900 leading-none mb-3">{stats.reviews || 0}</p>
-                        <p className="text-xs font-bold text-[#f59e0b]">4.9 ★ Rating</p>
+                        <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Reviews</p>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
+                            <p className="text-2xl sm:text-3xl font-black text-slate-900 leading-none">{stats.reviews || 0}</p>
+                            <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md self-start sm:self-auto">4.9 ★</span>
+                        </div>
                     </div>
                 </div>
             </div>

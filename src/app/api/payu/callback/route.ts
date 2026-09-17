@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import dbConnect from '@/lib/db';
 import { Enquiry } from '@/models/Enquiry';
+import Booking from '@/models/Booking';
 
 export async function POST(request: Request) {
   try {
@@ -41,34 +42,60 @@ export async function POST(request: Request) {
 
     if (calculatedHash !== resHash) {
       console.error('PayU Hash Mismatch', { calculatedHash, resHash });
-      // Update enquiry to failed due to hash mismatch
       if (udf1) {
-        await Enquiry.findByIdAndUpdate(udf1, {
-          paymentStatus: 'Failed',
-          status: 'Cancelled',
-          paymentTimestamp: new Date(),
-        });
+        if (udf2 === 'booking') {
+          await Booking.findByIdAndUpdate(udf1, {
+            paymentStatus: 'failed',
+            status: 'cancelled',
+            'paymentDetails.payuTransactionId': txnid
+          });
+        } else {
+          await Enquiry.findByIdAndUpdate(udf1, {
+            paymentStatus: 'Failed',
+            status: 'Cancelled',
+            paymentTimestamp: new Date(),
+          });
+        }
       }
       return NextResponse.redirect(`${baseUrl}/payment/failed?reason=hash_mismatch`, 303);
     }
 
     if (status === 'success') {
       if (udf1) {
-        await Enquiry.findByIdAndUpdate(udf1, {
-          paymentStatus: 'Success',
-          status: 'New', // Moving it from 'Payment Pending' to 'New' as it's now a valid enquiry
-          amountPaid: parseFloat(amount),
-          paymentTimestamp: new Date(),
-        });
+        if (udf2 === 'booking') {
+          await Booking.findByIdAndUpdate(udf1, {
+            paymentStatus: 'partially_paid', // Advance paid
+            status: 'confirmed',
+            amountPaid: parseFloat(amount),
+            'paymentDetails.payuTransactionId': txnid
+          });
+          return NextResponse.redirect(`${baseUrl}/book/success/${udf1}`, 303);
+        } else {
+          await Enquiry.findByIdAndUpdate(udf1, {
+            paymentStatus: 'Success',
+            status: 'New',
+            amountPaid: parseFloat(amount),
+            paymentTimestamp: new Date(),
+          });
+          return NextResponse.redirect(`${baseUrl}/payment/success?txnid=${txnid}`, 303);
+        }
       }
       return NextResponse.redirect(`${baseUrl}/payment/success?txnid=${txnid}`, 303);
     } else {
       if (udf1) {
-        await Enquiry.findByIdAndUpdate(udf1, {
-          paymentStatus: 'Failed',
-          status: 'Cancelled',
-          paymentTimestamp: new Date(),
-        });
+        if (udf2 === 'booking') {
+          await Booking.findByIdAndUpdate(udf1, {
+            paymentStatus: 'failed',
+            status: 'cancelled',
+            'paymentDetails.payuTransactionId': txnid
+          });
+        } else {
+          await Enquiry.findByIdAndUpdate(udf1, {
+            paymentStatus: 'Failed',
+            status: 'Cancelled',
+            paymentTimestamp: new Date(),
+          });
+        }
       }
       return NextResponse.redirect(`${baseUrl}/payment/failed?txnid=${txnid}`, 303);
     }

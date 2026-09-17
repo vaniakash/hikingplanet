@@ -10,7 +10,7 @@ interface ImageUploadProps {
     disabled?: boolean;
 }
 
-export default function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
+export default function ImageUpload({ value, onChange, disabled, maxImages = 5 }: ImageUploadProps & { maxImages?: number }) {
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
     console.log('DEBUG: Using Upload Preset:', uploadPreset || "boundlesspath_unsigned (fallback)");
 
@@ -27,9 +27,9 @@ export default function ImageUpload({ value, onChange, disabled }: ImageUploadPr
 
     return (
         <div>
-            <div className="mb-4 flex items-center gap-4">
+            <div className="mb-4 flex flex-wrap items-center gap-4">
                 {value.map((url) => (
-                    <div key={url} className="relative w-[200px] h-[200px] rounded-md overflow-hidden">
+                    <div key={url} className="relative w-[150px] h-[150px] rounded-md overflow-hidden">
                         <div className="z-10 absolute top-2 right-2">
                             <button
                                 type="button"
@@ -51,28 +51,31 @@ export default function ImageUpload({ value, onChange, disabled }: ImageUploadPr
                 ))}
             </div>
 
-            <CldUploadWidget
-                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "boundlesspath_unsigned"}
-                onSuccess={onUpload}
-                options={{
-                    maxFiles: 5,
-                    resourceType: "image"
-                }}
-            >
-                {({ open }) => {
-                    return (
-                        <button
-                            type="button"
-                            disabled={disabled}
-                            onClick={() => open()}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition border border-gray-300"
-                        >
-                            <ImagePlus className="w-4 h-4" />
-                            Upload Images
-                        </button>
-                    );
-                }}
-            </CldUploadWidget>
+            {value.length < maxImages && (
+                <CldUploadWidget
+                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "boundlesspath_unsigned"}
+                    onSuccess={onUpload}
+                    options={{
+                        multiple: true,
+                        maxFiles: maxImages - value.length,
+                        resourceType: "image"
+                    }}
+                >
+                    {({ open }) => {
+                        return (
+                            <button
+                                type="button"
+                                disabled={disabled}
+                                onClick={() => open()}
+                                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition border border-gray-300"
+                            >
+                                <ImagePlus className="w-4 h-4" />
+                                Upload Image{maxImages - value.length > 1 ? 's' : ''}
+                            </button>
+                        );
+                    }}
+                </CldUploadWidget>
+            )}
         </div>
     );
 }

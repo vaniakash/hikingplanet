@@ -9,6 +9,7 @@ import Trek from '@/models/Trek';
 import Trip from '@/models/Trip';
 import BookingSummaryCard from '@/components/BookingSummaryCard';
 import TrekInfoAccordion from '@/components/TrekInfoAccordion';
+import TrailHighlightsCarousel from '@/components/TrailHighlightsCarousel';
 
 // Generate full SEO + OG + Twitter Metadata for each trek
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -87,13 +88,13 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
     }));
 
     const SnapshotItem = ({ icon: Icon, label, value }: { icon: any; label: string; value: string | undefined }) => (
-        <div className="flex items-start gap-3 select-none group">
+        <div className="flex items-start gap-2.5 select-none group">
             <div className="shrink-0 text-[#1f7a4c] group-hover:scale-110 transition-transform duration-300">
-                <Icon weight="duotone" className="w-8 h-8" />
+                <Icon weight="duotone" className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <div>
-                <p className="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-0.5">{label}</p>
-                <div className="text-sm font-bold text-stone-900 leading-tight">{value || 'N/A'}</div>
+                <p className="text-[9px] md:text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-0.5">{label}</p>
+                <div className="text-xs md:text-sm font-bold text-stone-900 leading-tight">{value || 'N/A'}</div>
             </div>
         </div>
     );
@@ -169,7 +170,7 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                 {/* ── Row 1 Left: Trek Snapshot ── */}
                 <section className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6">
                     <h2 className="text-xl font-bold mb-6">Trek Snapshot</h2>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
                         <SnapshotItem icon={TrendUp} label="Difficulty Level" value={trek.difficulty} />
                         <SnapshotItem icon={Clock} label="Journey Length" value={`${trek.duration} Days`} />
                         <SnapshotItem icon={Mountains} label="Max Elevation" value={trek.elevation} />
@@ -199,17 +200,24 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                 {/* ── Row 2 Left: Overview → Inclusions/Exclusions → Gallery → Info Accordion ── */}
                 <div className="lg:col-span-2 space-y-10 pb-12">
 
-                    {/* Overview */}
+                    {/* Trail Highlights */}
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                        <div className="prose max-w-none text-gray-600 leading-relaxed whitespace-pre-line">
+                        <div className="mb-8">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight">Trail <span className="text-red-600">Highlights</span></h2>
+                            <div className="w-20 h-1.5 bg-red-600 rounded-full mt-4 opacity-80"></div>
+                        </div>
+
+                        <div className="prose max-w-none text-stone-600 text-[16px] leading-relaxed whitespace-pre-line">
                             {trek.description}
                         </div>
-                        {trek.shortDescription && (
-                            <div className="mt-8 p-6 bg-[#f4f1ea] border border-[#dcd6c8] rounded-2xl text-[#3d3d3d] italic leading-relaxed">
-                                <span className="block mb-2 font-bold text-[#1f7a4c] not-italic uppercase tracking-wider text-xs">Highlights</span>
-                                {trek.shortDescription}
-                            </div>
+
+                        {trek.highlights && trek.highlights.length > 0 && (
+                            <TrailHighlightsCarousel 
+                                highlights={trek.highlights.map((h: any) => ({ 
+                                    title: h.title, 
+                                    description: h.description 
+                                }))} 
+                            />
                         )}
                     </section>
 
@@ -254,6 +262,26 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                         trekTitle={trek.title}
                         infoIntro={trek.infoIntro ?? ''}
                         sections={infoSections}
+                        itinerary={trek.itinerary?.map((item: any) => ({
+                            day: item.day,
+                            title: item.title,
+                            description: item.description,
+                            distance: item.distance,
+                            durationInfo: item.durationInfo
+                        }))}
+                        detailedItinerary={trek.detailedItinerary?.map((item: any) => ({
+                            day: item.day,
+                            title: item.title,
+                            driveDuration: item.driveDuration,
+                            trekDuration: item.trekDuration,
+                            trekDistance: item.trekDistance,
+                            altitude: item.altitude,
+                            ascent: item.ascent,
+                            waterSources: item.waterSources,
+                            description: item.description,
+                            images: item.images
+                        }))}
+                        itineraryRouteMap={trek.routeMap}
                     />
 
                 </div>

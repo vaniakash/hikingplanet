@@ -21,9 +21,10 @@ export interface IBooking {
     status: 'pending' | 'confirmed' | 'cancelled';
     paymentStatus: 'pending' | 'paid' | 'failed' | 'partially_paid';
     paymentDetails?: {
-        razorpayOrderId: string;
-        razorpayPaymentId: string;
+        razorpayOrderId?: string;
+        razorpayPaymentId?: string;
         razorpaySignature?: string;
+        payuTransactionId?: string;
     };
 }
 
@@ -52,6 +53,7 @@ const BookingSchema = new Schema<IBooking>(
             razorpayOrderId: { type: String },
             razorpayPaymentId: { type: String },
             razorpaySignature: { type: String },
+            payuTransactionId: { type: String },
         },
     },
     { timestamps: true }

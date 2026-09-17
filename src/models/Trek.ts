@@ -6,6 +6,7 @@ export interface ITrek {
     location: string;
     description: string;
     shortDescription?: string;
+    highlights?: { title: string; description: string }[];
     difficulty: 'Easy' | 'Moderate' | 'Difficult' | 'Expert';
     duration: number; // Days
     price: number;
@@ -13,11 +14,13 @@ export interface ITrek {
     elevation?: string; // Max altitude
     bestTime?: string[]; // Array of months
     images: string[];
-    itinerary: { day: number; title: string; description: string }[];
+    itinerary: { day: number; title: string; description: string; distance?: string; durationInfo?: string }[];
+    detailedItinerary?: { day: number; title: string; driveDuration?: string; trekDuration?: string; trekDistance?: string; altitude?: string; ascent?: string; waterSources?: string; description?: string; images?: string[] }[];
     inclusions?: string[];
     exclusions?: string[];
     feeDetails?: { name: string; amount: number; type: 'fixed' | 'percent' }[];
     addOns?: { name: string; price: number; description: string; mandatory: boolean }[];
+    routeMap?: string;
     // Snapshot Fields
     ageRequirement?: string;
     startingPoint?: string;
@@ -42,6 +45,12 @@ const TrekSchema = new Schema<ITrek>(
         location: { type: String, required: true },
         description: { type: String, required: true },
         shortDescription: { type: String },
+        highlights: [
+            {
+                title: { type: String },
+                description: { type: String },
+            }
+        ],
         difficulty: { type: String, enum: ['Easy', 'Moderate', 'Difficult', 'Expert'], required: true },
         duration: { type: Number, required: true },
         price: { type: Number, required: true },
@@ -55,8 +64,25 @@ const TrekSchema = new Schema<ITrek>(
                 day: { type: Number },
                 title: { type: String },
                 description: { type: String },
+                distance: { type: String },
+                durationInfo: { type: String },
             },
         ],
+        detailedItinerary: [
+            {
+                day: { type: Number },
+                title: { type: String },
+                driveDuration: { type: String },
+                trekDuration: { type: String },
+                trekDistance: { type: String },
+                altitude: { type: String },
+                ascent: { type: String },
+                waterSources: { type: String },
+                description: { type: String },
+                images: [{ type: String }],
+            },
+        ],
+        routeMap: { type: String },
         inclusions: [{ type: String }],
         exclusions: [{ type: String }],
         // Pricing Details
