@@ -36,6 +36,21 @@ export interface ITrek {
     // Complete Trek Information accordions (indiahikes-style)
     infoIntro?: string; // Admin-editable intro paragraph
     infoSections?: { title: string; subtitle: string; content: string; imageUrl?: string }[];
+    difficultyDetails?: {
+        level: string;
+        description: string;
+        terrain?: string;
+        weather?: string;
+        altitude?: string;
+        safety?: string;
+    };
+    bestSeasonDetails?: {
+        seasonName: string;
+        temperature: string;
+        weather: string;
+        warmLayers: string;
+        description: string;
+    }[];
 }
 
 const TrekSchema = new Schema<ITrek>(
@@ -120,6 +135,23 @@ const TrekSchema = new Schema<ITrek>(
                 content: { type: String, default: '' },
                 imageUrl: { type: String, default: '' },
             },
+        ],
+        difficultyDetails: {
+            level: { type: String },
+            description: { type: String },
+            terrain: { type: String },
+            weather: { type: String },
+            altitude: { type: String },
+            safety: { type: String },
+        },
+        bestSeasonDetails: [
+            {
+                seasonName: { type: String },
+                temperature: { type: String },
+                weather: { type: String },
+                warmLayers: { type: String },
+                description: { type: String },
+            }
         ],
     },
     { timestamps: true }

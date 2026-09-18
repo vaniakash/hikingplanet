@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageUpload from './ImageUpload';
 import { Loader2, MapPin, AlignLeft, Image as ImageIcon, Camera, BookOpen, Plus, Trash2 } from 'lucide-react';
+import { Mountains, CloudSun } from '@phosphor-icons/react';
 
 interface TrekFormProps {
     initialData?: any;
@@ -42,6 +43,26 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             title: s.title || '', subtitle: s.subtitle || '', content: s.content || '', imageUrl: s.imageUrl || ''
         }))
     );
+    const [difficultyDetails, setDifficultyDetails] = useState<{ level: string; description: string; terrain: string; weather: string; altitude: string; safety: string }>({
+        level: initialData?.difficultyDetails?.level || 'Moderate',
+        description: initialData?.difficultyDetails?.description || '',
+        terrain: initialData?.difficultyDetails?.terrain || '',
+        weather: initialData?.difficultyDetails?.weather || '',
+        altitude: initialData?.difficultyDetails?.altitude || '',
+        safety: initialData?.difficultyDetails?.safety || '',
+    });
+
+    const emptyBestSeason = { seasonName: '', temperature: '', weather: '', warmLayers: '', description: '' };
+    const [bestSeasonDetails, setBestSeasonDetails] = useState<{ seasonName: string; temperature: string; weather: string; warmLayers: string; description: string }[]>(
+        (initialData?.bestSeasonDetails || []).map((s: any) => ({
+            seasonName: s.seasonName || '', temperature: s.temperature || '', weather: s.weather || '', warmLayers: s.warmLayers || '', description: s.description || ''
+        }))
+    );
+    const addBestSeason = () => setBestSeasonDetails(prev => [...prev, { ...emptyBestSeason }]);
+    const removeBestSeason = (i: number) => setBestSeasonDetails(prev => prev.filter((_, idx) => idx !== i));
+    const updateBestSeason = (i: number, field: 'seasonName' | 'temperature' | 'weather' | 'warmLayers' | 'description', value: string) =>
+        setBestSeasonDetails(prev => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
+
 
     const addSection = () => setInfoSections(prev => [...prev, { ...emptySection }]);
     const removeSection = (i: number) => setInfoSections(prev => prev.filter((_, idx) => idx !== i));
@@ -113,10 +134,12 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             const validItinerary = itinerary.filter(i => i.title && i.title.trim() !== '');
             const validDetailedItinerary = detailedItinerary.filter(i => i.title && i.title.trim() !== '');
 
+            const validBestSeasonDetails = bestSeasonDetails.filter(s => s.seasonName);
+
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
+                body: JSON.stringify({ ...formData, difficultyDetails, bestSeasonDetails: validBestSeasonDetails, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
             });
 
             if (!res.ok) {
@@ -661,6 +684,184 @@ export default function TrekForm({ initialData }: TrekFormProps) {
                         ))}
                     </div>
                 )}
+            </div>
+
+            {/* Difficulty Info */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-[#4b2e83]/10 p-2 rounded-lg">
+                        <Mountains className="w-6 h-6 text-[#4b2e83]" weight="duotone" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Difficulty Details</h2>
+                        <p className="text-sm text-gray-500">Provide detailed breakdown of the trek's difficulty</p>
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className={labelClasses}>Difficulty Level for Graphic</label>
+                            <select
+                                value={difficultyDetails.level}
+                                onChange={e => setDifficultyDetails({ ...difficultyDetails, level: e.target.value })}
+                                className={inputClasses}
+                            >
+                                <option value="Easy">Easy</option>
+                                <option value="Easy-Moderate">Easy-Moderate</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Moderate-Difficult">Moderate-Difficult</option>
+                                <option value="Difficult">Difficult</option>
+                                <option value="Expert">Expert</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className={labelClasses}>Graphic Subtitle (e.g., "Suitable for experienced trekkers")</label>
+                            <input
+                                type="text"
+                                value={difficultyDetails.description}
+                                onChange={e => setDifficultyDetails({ ...difficultyDetails, description: e.target.value })}
+                                className={inputClasses}
+                                placeholder="Subtitle text..."
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className={labelClasses}>Terrain</label>
+                        <textarea
+                            value={difficultyDetails.terrain}
+                            onChange={e => setDifficultyDetails({ ...difficultyDetails, terrain: e.target.value })}
+                            className={inputClasses}
+                            rows={3}
+                            placeholder="Describe the terrain... Use • for bullet points."
+                        />
+                    </div>
+                    <div>
+                        <label className={labelClasses}>Weather</label>
+                        <textarea
+                            value={difficultyDetails.weather}
+                            onChange={e => setDifficultyDetails({ ...difficultyDetails, weather: e.target.value })}
+                            className={inputClasses}
+                            rows={3}
+                            placeholder="Describe the weather... Use • for bullet points."
+                        />
+                    </div>
+                    <div>
+                        <label className={labelClasses}>Altitude</label>
+                        <textarea
+                            value={difficultyDetails.altitude}
+                            onChange={e => setDifficultyDetails({ ...difficultyDetails, altitude: e.target.value })}
+                            className={inputClasses}
+                            rows={3}
+                            placeholder="Describe altitude details... Use • for bullet points."
+                        />
+                    </div>
+                    <div>
+                        <label className={labelClasses}>Safety</label>
+                        <textarea
+                            value={difficultyDetails.safety}
+                            onChange={e => setDifficultyDetails({ ...difficultyDetails, safety: e.target.value })}
+                            className={inputClasses}
+                            rows={3}
+                            placeholder="Describe safety aspects... Use • for bullet points."
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Best Season Info */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="bg-[#4b2e83]/10 p-2 rounded-lg">
+                            <CloudSun className="w-6 h-6 text-[#4b2e83]" weight="duotone" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Best Seasons Details</h2>
+                            <p className="text-sm text-gray-500">Add detailed season-by-season breakdown for best time to visit.</p>
+                        </div>
+                    </div>
+                    <button type="button" onClick={addBestSeason} className="flex items-center gap-2 px-4 py-2 bg-[#4b2e83]/10 text-[#4b2e83] rounded-lg hover:bg-[#4b2e83]/20 transition-colors font-medium text-sm">
+                        <Plus className="w-4 h-4" /> Add Season
+                    </button>
+                </div>
+
+                <div className="space-y-6">
+                    {bestSeasonDetails.map((season, idx) => (
+                        <div key={idx} className="p-6 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl relative group">
+                            <button
+                                type="button"
+                                onClick={() => removeBestSeason(idx)}
+                                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                            >
+                                <Trash2 className="w-5 h-5" />
+                            </button>
+                            
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 pr-12">Season {idx + 1}</h3>
+
+                            <div className="space-y-6">
+                                <div>
+                                    <label className={labelClasses}>Season Name (e.g., "Summer (mid-May to end-June)")</label>
+                                    <input
+                                        type="text"
+                                        value={season.seasonName}
+                                        onChange={e => updateBestSeason(idx, 'seasonName', e.target.value)}
+                                        className={inputClasses}
+                                        placeholder="Enter season name..."
+                                    />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div>
+                                        <label className={labelClasses}>Temperature Info</label>
+                                        <textarea
+                                            value={season.temperature}
+                                            onChange={e => updateBestSeason(idx, 'temperature', e.target.value)}
+                                            className={inputClasses}
+                                            rows={2}
+                                            placeholder="Day: 15°C to 20°C | Night: drops to 0°C"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Weather / Snow</label>
+                                        <textarea
+                                            value={season.weather}
+                                            onChange={e => updateBestSeason(idx, 'weather', e.target.value)}
+                                            className={inputClasses}
+                                            rows={2}
+                                            placeholder="Receding snow on the trail..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className={labelClasses}>Warm Layers Recommended</label>
+                                        <textarea
+                                            value={season.warmLayers}
+                                            onChange={e => updateBestSeason(idx, 'warmLayers', e.target.value)}
+                                            className={inputClasses}
+                                            rows={2}
+                                            placeholder="3 warm layers"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className={labelClasses}>Description</label>
+                                    <textarea
+                                        value={season.description}
+                                        onChange={e => updateBestSeason(idx, 'description', e.target.value)}
+                                        className={inputClasses}
+                                        rows={4}
+                                        placeholder="Detailed description of the trek during this season..."
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {bestSeasonDetails.length === 0 && (
+                        <div className="text-center py-8 text-gray-500 bg-gray-50 dark:bg-gray-900/30 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+                            No season details added. Click "Add Season" to begin.
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Complete Trek Info Accordion Card */}

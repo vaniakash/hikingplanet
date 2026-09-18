@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LogOut, Mountain, Settings, Calendar, Sun, Moon, BarChart, Users, Search, Bell, Command, User, ArrowRightFromLine, LayoutDashboard } from 'lucide-react';
+import { LogOut, Mountain, Settings, Calendar, Sun, Moon, BarChart, Users, Search, Bell, Command, User, ArrowRightFromLine, LayoutDashboard, CreditCard } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
@@ -23,6 +23,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         { name: 'Lead Management', href: '/admin/leads', icon: Users, badge: 12, isComingSoon: false },
         { name: 'Manage Treks', href: '/admin/treks', icon: Mountain, isComingSoon: false },
         { name: 'All Bookings', href: '/admin/bookings', icon: Calendar, isComingSoon: false },
+        { name: 'Payments', href: '/admin/payments', icon: CreditCard, isComingSoon: false },
         { name: 'Settings', href: '#', icon: Settings, isComingSoon: true },
     ];
 

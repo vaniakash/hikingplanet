@@ -27,11 +27,28 @@ interface Props {
     itinerary?: ItineraryDay[];
     detailedItinerary?: DetailedItineraryDay[];
     itineraryRouteMap?: string;
+    difficultyDetails?: {
+        level: string;
+        description: string;
+        terrain?: string;
+        weather?: string;
+        altitude?: string;
+        safety?: string;
+    };
+    bestSeasonDetails?: {
+        seasonName: string;
+        temperature: string;
+        weather: string;
+        warmLayers: string;
+        description: string;
+    }[];
 }
 
 // Helper to guess an icon based on section title
 const getIconForTitle = (title: string) => {
     const t = title.toLowerCase();
+    if (t === 'journey breakdown') return <img src="/svgs/daybyday.svg" alt="Journey Breakdown" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    if (t === 'quick itinerary') return <img src="/svgs/quick_itanary.svg" alt="Quick Itinerary" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
     if (t.includes('itinerary')) return <ClipboardText weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
     if (t.includes('day look') || t.includes('photo')) return <ImageSquare weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
     if (t.includes('difficult')) return <Mountains weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
@@ -41,7 +58,7 @@ const getIconForTitle = (title: string) => {
     return <BookOpen weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
 };
 
-export default function TrekInfoAccordion({ trekTitle, infoIntro, sections, itinerary, detailedItinerary, itineraryRouteMap }: Props) {
+export default function TrekInfoAccordion({ trekTitle, infoIntro, sections, itinerary, detailedItinerary, itineraryRouteMap, difficultyDetails, bestSeasonDetails }: Props) {
     const [openId, setOpenId] = useState<number | null>(null);
 
     // Build the combined list of accordion items.
@@ -63,6 +80,24 @@ export default function TrekInfoAccordion({ trekTitle, infoIntro, sections, itin
             title: 'Journey Breakdown',
             subtitle: 'Complete Trek Guide with Photos',
             data: detailedItinerary
+        });
+    }
+
+    if (difficultyDetails && difficultyDetails.level) {
+        allItems.push({
+            isDifficultyDetails: true,
+            title: `How Difficult Is ${trekTitle}`,
+            subtitle: 'What You Can Expect in terms of Terrain, Altitude, Weather and Safety',
+            data: difficultyDetails
+        });
+    }
+
+    if (bestSeasonDetails && bestSeasonDetails.length > 0) {
+        allItems.push({
+            isBestSeasonDetails: true,
+            title: `Best Time To Do ${trekTitle}`,
+            subtitle: 'Schedule Your Trek Dates Based on the Best Season',
+            data: bestSeasonDetails
         });
     }
 
@@ -172,6 +207,134 @@ export default function TrekInfoAccordion({ trekTitle, infoIntro, sections, itin
                                         </div>
                                     ) : item.isDetailedItinerary ? (
                                         <DetailedItineraryTabs itinerary={item.data} />
+                                    ) : item.isBestSeasonDetails ? (
+                                        <div className="space-y-12 pt-4">
+                                            {item.data.map((season: any, idx: number) => (
+                                                <div key={idx} className="border-b border-gray-100 pb-10 last:border-0 last:pb-0">
+                                                    <h3 className="text-2xl font-bold text-stone-900 mb-6 font-serif tracking-tight">{season.seasonName}</h3>
+                                                    
+                                                    <div className="space-y-5 mb-8 text-[15px]">
+                                                        {season.temperature && (
+                                                            <div className="flex items-start gap-4">
+                                                                <HourglassHigh weight="duotone" className="w-7 h-7 text-yellow-500 shrink-0" />
+                                                                <div className="text-stone-800 leading-relaxed pt-0.5">{season.temperature}</div>
+                                                            </div>
+                                                        )}
+                                                        {season.weather && (
+                                                            <div className="flex items-start gap-4">
+                                                                <Boot weight="duotone" className="w-7 h-7 text-yellow-500 shrink-0" />
+                                                                <div className="text-stone-800 leading-relaxed pt-0.5">{season.weather}</div>
+                                                            </div>
+                                                        )}
+                                                        {season.warmLayers && (
+                                                            <div className="flex items-start gap-4">
+                                                                <Backpack weight="duotone" className="w-7 h-7 text-yellow-500 shrink-0" />
+                                                                <div className="text-stone-800 leading-relaxed pt-0.5">{season.warmLayers}</div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {season.description && (
+                                                        <div className="text-stone-800 leading-loose space-y-5 font-serif text-[17px]">
+                                                            {season.description.split('\n').map((para: string, pIdx: number) => {
+                                                                if (!para.trim()) return null;
+                                                                // Highlight specific notes if they start with "| Note:"
+                                                                if (para.startsWith('| Note:')) {
+                                                                    return <p key={pIdx} className="font-bold text-stone-900">{para}</p>;
+                                                                }
+                                                                return <p key={pIdx}>{para}</p>;
+                                                            })}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : item.isDifficultyDetails ? (
+                                        <div className="flex flex-col md:flex-row gap-8 md:gap-16 pt-4">
+                                            {/* Graphic Left */}
+                                            <div className="md:w-48 shrink-0 text-center flex flex-col items-center">
+                                                <div className="flex items-end gap-1.5 justify-center mb-4 h-20">
+                                                    {[1, 2, 3, 4].map(idx => {
+                                                        const activeThreshold = 
+                                                            item.data.level === 'Easy' ? 1 : 
+                                                            item.data.level === 'Easy-Moderate' ? 2 : 
+                                                            item.data.level === 'Moderate' ? 2 : 
+                                                            item.data.level === 'Moderate-Difficult' ? 3 : 
+                                                            item.data.level === 'Difficult' ? 4 : 4;
+                                                        
+                                                        const colorClass = 
+                                                            item.data.level.includes('Easy') ? 'bg-green-400' :
+                                                            item.data.level === 'Moderate' ? 'bg-orange-400' :
+                                                            item.data.level === 'Moderate-Difficult' ? 'bg-orange-500' :
+                                                            'bg-red-500';
+
+                                                        const isActive = idx <= activeThreshold;
+
+                                                        return (
+                                                            <div 
+                                                                key={idx} 
+                                                                className={`w-4 rounded-t-sm transition-all ${isActive ? colorClass : 'bg-gray-200 dark:bg-gray-700'}`}
+                                                                style={{ height: `${(idx / 4) * 100}%` }}
+                                                            />
+                                                        )
+                                                    })}
+                                                </div>
+                                                <div className="font-black text-xl text-stone-900 mb-2 leading-tight uppercase">
+                                                    {item.data.level}
+                                                </div>
+                                                <div className="text-[15px] font-bold text-stone-600 leading-snug">
+                                                    {item.data.description}
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Content Right */}
+                                            <div className="flex-1 space-y-8">
+                                                {item.data.terrain && (
+                                                    <div>
+                                                        <h4 className="font-bold text-xl text-stone-900 mb-3 font-serif">Terrain:</h4>
+                                                        <ul className="text-stone-700 leading-relaxed space-y-2 whitespace-pre-line ml-6 list-disc list-outside text-[16px]">
+                                                            {item.data.terrain.split('\n').map((line: string, i: number) => {
+                                                                if (!line.trim()) return null;
+                                                                const cleanLine = line.replace(/^[•\-\*]\s*/, '');
+                                                                return <li key={i}>{cleanLine}</li>;
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                                
+                                                {item.data.weather && (
+                                                    <div>
+                                                        <h4 className="font-bold text-xl text-stone-900 mb-3 font-serif">Weather:</h4>
+                                                        <ul className="text-stone-700 leading-relaxed space-y-2 whitespace-pre-line ml-6 list-disc list-outside text-[16px]">
+                                                            {item.data.weather.split('\n').map((line: string, i: number) => {
+                                                                if (!line.trim()) return null;
+                                                                const cleanLine = line.replace(/^[•\-\*]\s*/, '');
+                                                                return <li key={i}>{cleanLine}</li>;
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {item.data.altitude && (
+                                                    <div>
+                                                        <h4 className="font-bold text-xl text-stone-900 mb-3 font-serif">Altitude:</h4>
+                                                        <ul className="text-stone-700 leading-relaxed space-y-2 whitespace-pre-line ml-6 list-disc list-outside text-[16px]">
+                                                            {item.data.altitude.split('\n').map((line: string, i: number) => {
+                                                                if (!line.trim()) return null;
+                                                                const cleanLine = line.replace(/^[•\-\*]\s*/, '');
+                                                                return <li key={i}>{cleanLine}</li>;
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                )}
+
+                                                {item.data.safety && (
+                                                    <div className="font-bold text-[15px] text-stone-900 leading-relaxed mt-10">
+                                                        Please note: {item.data.safety}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     ) : (
                                         <div className="space-y-6">
                                             {item.imageUrl && (

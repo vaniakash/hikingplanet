@@ -262,6 +262,8 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                         trekTitle={trek.title}
                         infoIntro={trek.infoIntro ?? ''}
                         sections={infoSections}
+                        difficultyDetails={trek.difficultyDetails}
+                        bestSeasonDetails={trek.bestSeasonDetails}
                         itinerary={trek.itinerary?.map((item: any) => ({
                             day: item.day,
                             title: item.title,
