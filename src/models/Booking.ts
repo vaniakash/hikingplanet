@@ -26,6 +26,8 @@ export interface IBooking {
         razorpaySignature?: string;
         payuTransactionId?: string;
     };
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 const BookingSchema = new Schema<IBooking>(

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { CaretDown, CaretUp, MapPin, Tent, Backpack, Person, Bed, CloudSun, Mountains, Heartbeat, ImageSquare, FileText, Compass, Sun, MapTrifold, CalendarBlank, AirplaneTilt, BookOpen, ClipboardText, ShareNetwork, Image as ImageIcon, Thermometer } from '@phosphor-icons/react';
+import { CaretDown, CaretUp, MapPin, Tent, Backpack, Person, Bed, CloudSun, Mountains, Heartbeat, ImageSquare, FileText, Compass, Sun, MapTrifold, CalendarBlank, AirplaneTilt, BookOpen, ClipboardText, ShareNetwork, Image as ImageIcon, Thermometer, HourglassHigh, Boot } from '@phosphor-icons/react';
 import DetailedItineraryTabs, { DetailedItineraryDay } from './DetailedItineraryTabs';
 
 interface InfoSection {
