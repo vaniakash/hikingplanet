@@ -225,16 +225,22 @@ export default function HeroBanner({ lowestPrice = 6999, lowestPriceSlug = null 
                                 {slide.priceText && (
                                     <motion.p
                                         variants={textItem}
-                                        className="text-base sm:text-lg mb-8 opacity-95 font-bold leading-relaxed drop-shadow-md text-white"
+                                        className="text-base sm:text-lg mb-4 opacity-95 font-bold leading-relaxed drop-shadow-md text-white"
                                     >
                                         {slideIndex === 0 ? `Starting from ₹${lowestPrice.toLocaleString('en-IN')}` : slide.priceText}
                                     </motion.p>
                                 )}
 
+                                {/* Trust Text */}
+                                <motion.div variants={textItem} className="mb-8 flex items-center gap-2 text-white/70 text-xs sm:text-sm font-bold tracking-wide uppercase">
+                                    <ShieldCheck weight="fill" className="text-[#e30613] w-5 h-5 shrink-0" />
+                                    <span>{slide.trustText}</span>
+                                </motion.div>
+
                                 {/* Buttons */}
                                 <motion.div
                                     variants={textItem}
-                                    className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 ${!slide.priceText ? 'mt-8' : ''}`}
+                                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-12"
                                 >
                                     <Link
                                         href={slide.ctaLink}
@@ -252,12 +258,6 @@ export default function HeroBanner({ lowestPrice = 6999, lowestPriceSlug = null 
                                             {slide.secondaryCtaText}
                                         </Link>
                                     )}
-                                </motion.div>
-
-                                {/* Trust Text */}
-                                <motion.div variants={textItem} className="mt-8 flex items-center gap-2 text-white/70 text-xs sm:text-sm font-bold tracking-wide uppercase">
-                                    <ShieldCheck weight="fill" className="text-[#e30613] w-5 h-5" />
-                                    <span>{slide.trustText}</span>
                                 </motion.div>
                             </motion.div>
                         </div>

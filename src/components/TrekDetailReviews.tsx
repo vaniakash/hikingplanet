@@ -72,9 +72,9 @@ export default function TrekDetailReviews({ reviews }: { reviews?: Review[] }) {
       {/* Top Border Line */}
       <div className="w-full h-[2px] bg-yellow-400 mb-10"></div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-8 pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {currentReviews.map((review, idx) => (
-          <div key={idx} className="flex flex-col">
+          <div key={idx} className="flex flex-col min-w-[85vw] sm:min-w-[320px] lg:min-w-0 snap-start shrink-0">
             <h3 className="font-bold text-gray-800 dark:text-gray-100 text-[13px] uppercase tracking-wide">
               {review.reviewerName}
             </h3>
