@@ -36,9 +36,8 @@ async function FeaturedTreks() {
   const Trek = (await import('@/models/Trek')).default;
 
   await dbConnect();
-  const featuredTreks = await Trek.find({ isActive: true })
-    .sort({ isFeatured: -1, createdAt: -1 })
-    .limit(4)
+  const featuredTreks = await Trek.find({ isActive: true, isFeatured: true })
+    .sort({ createdAt: -1 })
     .lean();
 
   const PlanYourAdventure = (await import('@/components/PlanYourAdventure')).default;

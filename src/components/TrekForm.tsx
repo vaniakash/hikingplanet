@@ -23,6 +23,7 @@ export default function TrekForm({ initialData }: TrekFormProps) {
         price: initialData?.price || 0,
         elevation: initialData?.elevation || '',
         images: initialData?.images || [],
+        isFeatured: initialData?.isFeatured || false,
         // Snapshot Fields
         ageRequirement: initialData?.ageRequirement || '',
         startingPoint: initialData?.startingPoint || '',
@@ -93,6 +94,17 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             day: i.day || 1, title: i.title || '', driveDuration: i.driveDuration || '', trekDuration: i.trekDuration || '', trekDistance: i.trekDistance || '', altitude: i.altitude || '', ascent: i.ascent || '', waterSources: i.waterSources || '', description: i.description || '', images: i.images || []
         }))
     );
+    
+    const emptyTrekReview = { reviewerName: '', trekGroup: '', title: '', content: '' };
+    const [trekReviews, setTrekReviews] = useState<{ reviewerName: string; trekGroup: string; title: string; content: string }[]>(
+        (initialData?.trekReviews || []).map((r: any) => ({
+            reviewerName: r.reviewerName || '', trekGroup: r.trekGroup || '', title: r.title || '', content: r.content || ''
+        }))
+    );
+    const addTrekReview = () => setTrekReviews(prev => [...prev, { ...emptyTrekReview }]);
+    const removeTrekReview = (i: number) => setTrekReviews(prev => prev.filter((_, idx) => idx !== i));
+    const updateTrekReview = (i: number, field: 'reviewerName' | 'trekGroup' | 'title' | 'content', value: string) =>
+        setTrekReviews(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: value } : r));
 
     const [routeMap, setRouteMap] = useState<string>(initialData?.routeMap || '');
     
@@ -135,11 +147,12 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             const validDetailedItinerary = detailedItinerary.filter(i => i.title && i.title.trim() !== '');
 
             const validBestSeasonDetails = bestSeasonDetails.filter(s => s.seasonName);
+            const validTrekReviews = trekReviews.filter(r => r.reviewerName && r.reviewerName.trim() !== '');
 
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, difficultyDetails, bestSeasonDetails: validBestSeasonDetails, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
+                body: JSON.stringify({ ...formData, difficultyDetails, bestSeasonDetails: validBestSeasonDetails, trekReviews: validTrekReviews, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
             });
 
             if (!res.ok) {
@@ -262,6 +275,18 @@ export default function TrekForm({ initialData }: TrekFormProps) {
                             placeholder="e.g. 12,500 ft"
                             className={inputClasses}
                         />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                        <label className="flex items-center gap-3 cursor-pointer mt-6">
+                            <input
+                                type="checkbox"
+                                name="isFeatured"
+                                checked={formData.isFeatured}
+                                onChange={(e) => setFormData(prev => ({ ...prev, isFeatured: e.target.checked }))}
+                                className="w-5 h-5 text-[#4b2e83] rounded border-gray-300 focus:ring-[#4b2e83]"
+                            />
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Show in Upcoming Section</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -962,6 +987,86 @@ export default function TrekForm({ initialData }: TrekFormProps) {
                     </div>
                 )}
             </div>
+            {/* Trek Reviews Card */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <span>💬</span>
+                        Trekker Reviews
+                    </h3>
+                    <button
+                        type="button"
+                        onClick={addTrekReview}
+                        className="px-4 py-2 text-sm font-semibold rounded-lg bg-[#4b2e83]/10 text-[#4b2e83] hover:bg-[#4b2e83]/20 transition flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" /> Add Review
+                    </button>
+                </div>
+
+                <div className="space-y-6">
+                    {trekReviews.length === 0 && (
+                        <div className="text-center py-8 text-gray-500 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+                            No reviews added yet. Click 'Add Review' to add one.
+                        </div>
+                    )}
+                    {trekReviews.map((review, idx) => (
+                        <div key={idx} className="p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative group">
+                            <button
+                                type="button"
+                                onClick={() => removeTrekReview(idx)}
+                                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                                title="Remove Review"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className={labelClasses}>Reviewer Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. RISHABH SHARMA"
+                                        value={review.reviewerName}
+                                        onChange={e => updateTrekReview(idx, 'reviewerName', e.target.value)}
+                                        className={inputClasses}
+                                    />
+                                </div>
+                                <div>
+                                    <label className={labelClasses}>Trek Group / Date</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. Group of 18th September 2026"
+                                        value={review.trekGroup}
+                                        onChange={e => updateTrekReview(idx, 'trekGroup', e.target.value)}
+                                        className={inputClasses}
+                                    />
+                                </div>
+                            </div>
+                            <div className="mb-4">
+                                <label className={labelClasses}>Review Headline (Bold)</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Dayara Bugyal was much more beautiful than I expected"
+                                    value={review.title}
+                                    onChange={e => updateTrekReview(idx, 'title', e.target.value)}
+                                    className={inputClasses}
+                                />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Review Content</label>
+                                <textarea
+                                    placeholder="Write the full review here..."
+                                    rows={4}
+                                    value={review.content}
+                                    onChange={e => updateTrekReview(idx, 'content', e.target.value)}
+                                    className={inputClasses}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
 
             {/* Error & Submit */}
             {

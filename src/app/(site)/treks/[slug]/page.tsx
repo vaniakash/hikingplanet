@@ -10,6 +10,9 @@ import Trip from '@/models/Trip';
 import BookingSummaryCard from '@/components/BookingSummaryCard';
 import TrekInfoAccordion from '@/components/TrekInfoAccordion';
 import TrailHighlightsCarousel from '@/components/TrailHighlightsCarousel';
+import TrekDetailReviews from '@/components/TrekDetailReviews';
+
+export const revalidate = 60;
 
 // Generate full SEO + OG + Twitter Metadata for each trek
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -221,6 +224,9 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                         )}
                     </section>
 
+                    {/* Trek Reviews (Admin Managed) */}
+                    <TrekDetailReviews reviews={trek.trekReviews} />
+
                     {/* Inclusions / Exclusions — only shown if admin has added data */}
                     {((trek.inclusions && trek.inclusions.length > 0) || (trek.exclusions && trek.exclusions.length > 0)) && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -285,7 +291,6 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                         }))}
                         itineraryRouteMap={trek.routeMap}
                     />
-
                 </div>
             </div>
 

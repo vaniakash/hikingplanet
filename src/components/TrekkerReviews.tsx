@@ -170,9 +170,6 @@ export default function TrekkerReviews() {
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900">{review.name}</h4>
-                  <p className="text-sm text-slate-600 flex items-center gap-1">
-                    {review.profession}
-                  </p>
                   <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                     <MapPin className="w-3 h-3" /> {review.location}
                   </p>

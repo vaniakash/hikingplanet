@@ -51,6 +51,12 @@ export interface ITrek {
         warmLayers: string;
         description: string;
     }[];
+    trekReviews?: {
+        reviewerName: string;
+        trekGroup: string;
+        title: string;
+        content: string;
+    }[];
 }
 
 const TrekSchema = new Schema<ITrek>(
@@ -151,6 +157,14 @@ const TrekSchema = new Schema<ITrek>(
                 weather: { type: String },
                 warmLayers: { type: String },
                 description: { type: String },
+            }
+        ],
+        trekReviews: [
+            {
+                reviewerName: { type: String },
+                trekGroup: { type: String },
+                title: { type: String },
+                content: { type: String }
             }
         ],
     },
