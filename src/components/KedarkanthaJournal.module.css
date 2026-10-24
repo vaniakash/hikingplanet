@@ -1,0 +1,374 @@
+/* ── tokens ── */
+.wrapper {
+  --desk: #F4F1EA;
+  --dot: #e6e1d6;
+  --paper: #faf7f0;
+  --edge: #e2d9c0;
+  --ink: #1d2433;
+  --navy: #14264d;
+  --gold: #d9c28a;
+  --camp: #e0643a;
+  --w: min(40vw, 50vh);
+  --h: calc(var(--w) * 1.22);
+  --flip: 0;
+  --bump: 0;
+  --rings: 0;
+  --hint: 1;
+}
+
+
+/* ── scroll track ── */
+.wrapper {
+  height: 900vh;
+  position: relative;
+  font-family: var(--font-fraunces, Georgia, serif);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  perspective: 2200px;
+  background: #F4F1EA;
+}
+
+/* ── book ── */
+.book {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  transform-style: preserve-3d;
+  font-size: calc(var(--w) / 24);
+  transform:
+    translateX(calc(var(--w) / 2 * (1 - var(--flip))))
+    rotateX(calc(12deg * (1 - var(--flip)) + 6deg * var(--flip)))
+    rotateZ(calc(-2deg * (1 - var(--flip))));
+  transform-origin: 50% 60%;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  border-radius: 0.3em 0.9em 0.9em 0.3em;
+  box-shadow:
+    0.25em 0.25em 0 var(--edge),
+    0.5em 0.5em 0 var(--edge),
+    0.9em 1.2em 2.4em rgba(0, 0, 0, 0.3);
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(-180deg * var(--flip)));
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.front {
+  border-radius: 0.3em 0.9em 0.9em 0.3em;
+  color: var(--gold);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  padding: 2em;
+  background:
+    linear-gradient(rgba(0,0,0,0.38), rgba(0,0,0,0.38)),
+    url('/designs/notebook-blue-cloth.webp') center / cover no-repeat;
+  box-shadow:
+    inset 0 0 3em rgba(0,0,0,0.45),
+    0.3em 0.3em 0 var(--edge),
+    0.7em 0.9em 0 var(--edge),
+    1em 1.4em 2.6em rgba(0,0,0,0.35);
+}
+
+.front h1 {
+  font-size: 2.1em;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  line-height: 1.1;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+}
+
+.front hr {
+  width: 60%;
+  border: 0;
+  border-top: 1px solid var(--gold);
+  opacity: 0.6;
+}
+
+.front p {
+  font-size: 0.62em;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  line-height: 1.9;
+  opacity: 0.85;
+}
+
+.back {
+  transform: rotateY(180deg);
+  border-radius: 0.9em 0.3em 0.3em 0.9em;
+  background: var(--paper);
+  box-shadow: -0.25em 0.25em 0 var(--edge), -0.5em 0.5em 0 var(--edge);
+}
+
+.box {
+  position: absolute;
+  inset: 2.2em 2em 1.8em 2.3em;
+}
+
+.back .box {
+  inset: 2.2em 2.3em 1.8em 2em;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #000;
+  opacity: calc(0.25 * var(--bump));
+  pointer-events: none;
+}
+
+.rings {
+  position: absolute;
+  left: 0;
+  top: 4%;
+  bottom: 4%;
+  width: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: var(--rings);
+  transform: translateZ(2px);
+  pointer-events: none;
+}
+
+.ring {
+  display: block;
+  position: relative;
+  left: -1.7em;
+  width: 3.4em;
+  height: 0.85em;
+  border-radius: 0.5em;
+  background: linear-gradient(#555, #0e0e0e 55%, #2c2c2c);
+  box-shadow: 0 0.25em 0.3em rgba(0,0,0,0.35);
+}
+
+/* ── typography ── */
+.hand { font-family: var(--font-caveat, cursive); font-weight: 700; }
+.lab {
+  font-size: 0.62em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7b5a3a;
+  margin-bottom: 0.8em;
+  display: block;
+}
+.box h2 { font-size: 2em; line-height: 1.02; font-weight: 700; margin-bottom: 0.7em; }
+.txt { font-size: 0.8em; line-height: 1.55; }
+.ann { font-size: 1.3em; color: #1f3fd1; margin-top: 1em; transform: rotate(-3deg); display: inline-block; border-bottom: 0.08em solid #d6402f; }
+.box dl { display: grid; grid-template-columns: auto 1fr; gap: 0.55em 1em; font-size: 0.76em; line-height: 1.35; }
+.box dt { color: #7b5a3a; font-style: italic; }
+.box dd { font-weight: 700; margin: 0; }
+.note { font-size: 1.3em; color: #1f3fd1; line-height: 1.1; margin-top: 0.8em; transform: rotate(-2deg); display: block; }
+
+.day {
+  position: absolute;
+  left: 0; right: 0;
+  top: 7.4em;
+}
+.day h3 { font-size: 1.25em; line-height: 1.15; margin-bottom: 0.4em; }
+.meta { font-size: 1.2em; color: #1f3fd1; margin-bottom: 0.6em; display: block; }
+
+.info {
+  position: absolute;
+  inset: 0;
+}
+
+/* intro block — desktop: fills .back .box absolutely (JS animates opacity) */
+.intro {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── final CTA ── */
+.final {
+  position: absolute;
+  z-index: 20;
+  width: min(88vw, 36rem);
+  text-align: center;
+  background: var(--paper);
+  padding: 2.6rem 2rem;
+  border-radius: 0.6rem;
+  box-shadow: 0.4rem 0.4rem 0 var(--edge), 0 1.5rem 3rem rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;
+  font-family: var(--font-fraunces, Georgia, serif);
+}
+.final h2 { font-size: clamp(1.4rem, 3.5vw, 2.2rem); letter-spacing: 0.02em; font-weight: 700; color: var(--ink); }
+.final p { margin: 0.8rem 0 1.6rem; color: #555; }
+.btns { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; }
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.3rem;
+  font: 700 0.85rem var(--font-fraunces, serif);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  color: #f4f0e6;
+  border-radius: 0.2rem;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btnAlt { background: transparent; color: var(--navy); }
+.btn:hover, .btn:focus-visible { background: var(--camp); border-color: var(--camp); color: #fff; outline: none; }
+
+.hint {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #7a7466;
+  opacity: var(--hint);
+  font-family: var(--font-fraunces, Georgia, serif);
+}
+
+/* ── mobile / reduced-motion: simple stacked layout ── */
+@media (max-width: 760px), (prefers-reduced-motion: reduce) {
+  /* scroll track becomes normal flow */
+  .wrapper { height: auto; }
+
+  .stage {
+    position: static;
+    height: auto;
+    display: block;
+    padding: 1rem;
+    perspective: none;
+    background: #F4F1EA;
+  }
+
+  /* book: full-width, flat */
+  .book {
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    font-size: 15px;
+    opacity: 1 !important;
+    scale: 1 !important;
+  }
+
+  /* cover: static, no 3D flip */
+  .cover { position: static; transform: none; }
+
+  /* hide desktop-only elements */
+  .front, .rings, .hint, .shade { display: none; }
+
+  /* back face (left page) — show as a card */
+  .face.back {
+    position: static;
+    transform: none;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    background: #fff;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e0d5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  /* right page — show as a card */
+  .page {
+    position: static;
+    transform: none;
+    background: #fff;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e0d5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 1rem;
+    padding: 1.4rem;
+    min-height: 0;
+  }
+
+  /* .box inside back face: static, padded */
+  .back .box {
+    position: static;
+    padding: 1.4rem;
+  }
+
+  /* right-page box: static */
+  .box {
+    position: static;
+  }
+
+  /* intro block: hide on mobile (facts table covers same info) */
+  .intro { display: none; }
+
+  /* facts block: always visible, static */
+  .info {
+    position: static;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* day articles: stacked, not absolutely positioned */
+  .day {
+    position: static;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #ede8dd;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .day:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  /* force all animated elements visible */
+  :global([data-s]), :global([data-x]) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* headings in box */
+  .box h2 { font-size: 1.5em; margin-bottom: 0.6em; }
+
+  /* dl (trek facts) layout */
+  .box dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5em 0.8em;
+    font-size: 0.85rem;
+  }
+
+  /* CTA block: static, full-width card */
+  .final {
+    position: static;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    margin: 0 0 1rem;
+    width: 100%;
+    border-radius: 0.75rem;
+    padding: 1.8rem 1.2rem;
+  }
+
+  .btns { flex-direction: column; }
+  .btn { text-align: center; }
+}
