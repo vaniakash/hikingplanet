@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { CaretDown, CaretUp, MapPin, Tent, Backpack, Person, Bed, CloudSun, Mountains, Heartbeat, ImageSquare, FileText, Compass, Sun, MapTrifold, CalendarBlank, AirplaneTilt, BookOpen, ClipboardText, ShareNetwork, Image as ImageIcon, Thermometer, HourglassHigh, Boot } from '@phosphor-icons/react';
+import { CaretDown, CaretUp, HourglassHigh, Boot, Backpack, ShareNetwork } from '@phosphor-icons/react';
 import DetailedItineraryTabs, { DetailedItineraryDay } from './DetailedItineraryTabs';
 
 interface InfoSection {
@@ -47,15 +47,37 @@ interface Props {
 // Helper to guess an icon based on section title
 const getIconForTitle = (title: string) => {
     const t = title.toLowerCase();
+    // Fixed special sections (exact match first)
     if (t === 'journey breakdown') return <img src="/svgs/daybyday.svg" alt="Journey Breakdown" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
     if (t === 'quick itinerary') return <img src="/svgs/quick_itanary.svg" alt="Quick Itinerary" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
-    if (t.includes('itinerary')) return <ClipboardText weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    if (t.includes('day look') || t.includes('photo')) return <ImageSquare weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    if (t.includes('difficult')) return <Mountains weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    if (t.includes('time') || t.includes('season') || t.includes('weather')) return <CalendarBlank weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    if (t.includes('packing') || t.includes('take')) return <Backpack weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    if (t.includes('travel') || t.includes('reach')) return <AirplaneTilt weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
-    return <BookOpen weight="duotone" className="w-9 h-9 md:w-10 md:h-10 text-stone-700 group-hover:text-[#dc2626] transition-colors" />;
+    // Travel / How to reach
+    if (t.includes('travel') || t.includes('reach') || t.includes('plan your') || t.includes('getting there') || t.includes('how to get'))
+        return <img src="/treks_icon/travel.svg" alt="Travel" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Camping experience
+    if (t.includes('camping') || t.includes('camp') || t.includes('experience like') || t.includes('stay, food') || t.includes('toilet'))
+        return <img src="/treks_icon/camping.svg" alt="Camping" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Stay options / accommodation
+    if (t.includes('stay option') || t.includes('accommodation') || t.includes('lodg') || t.includes('hotel') || t.includes('guesthouse'))
+        return <img src="/treks_icon/stay.svg" alt="Stay Options" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Packing list / gear
+    if (t.includes('packing') || t.includes('gear list') || t.includes('what to carry') || t.includes('what to bring') || t.includes('what to take'))
+        return <img src="/treks_icon/packing.svg" alt="Packing List" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Fitness / get fit
+    if (t.includes('fitness') || t.includes('get fit') || t.includes('trek fit') || t.includes('workout') || t.includes('training') || t.includes('how to prepare'))
+        return <img src="/treks_icon/fitness.svg" alt="Fitness" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // FAQ
+    if (t.includes('faq') || t.includes('frequently asked') || t.includes('questions answered') || t.includes('common questions'))
+        return <img src="/treks_icon/faq.svg" alt="FAQ" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Gallery / day look
+    if (t.includes('day look') || t.includes('photo') || t.includes('gallery'))
+        return <img src="/treks_icon/gallery.png" alt="Gallery" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Fallbacks using existing PNG icons
+    if (t.includes('itinerary')) return <img src="/treks_icon/task-list.png" alt="Itinerary" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    if (t.includes('difficult')) return <img src="/treks_icon/mountain.png" alt="Difficulty" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    if (t.includes('time') || t.includes('season') || t.includes('weather') || t.includes('best time'))
+        return <img src="/treks_icon/calendar.png" alt="Best Season" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
+    // Default
+    return <img src="/treks_icon/footprints.png" alt="Info" className="w-9 h-9 md:w-10 md:h-10 object-contain group-hover:opacity-80 transition-opacity" />;
 };
 
 export default function TrekInfoAccordion({ trekTitle, infoIntro, sections, itinerary, detailedItinerary, itineraryRouteMap, difficultyDetails, bestSeasonDetails }: Props) {

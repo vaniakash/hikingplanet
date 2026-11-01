@@ -106,6 +106,38 @@ export default function TrekForm({ initialData }: TrekFormProps) {
     const updateTrekReview = (i: number, field: 'reviewerName' | 'trekGroup' | 'title' | 'content', value: string) =>
         setTrekReviews(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: value } : r));
 
+    // ── 6 Dedicated IndiHikes-style sections ─────────────────────────────────
+    // Each is a standalone textarea stored as a plain string; on save they are
+    // upserted into infoSections with a fixed title so the accordion icon
+    // matcher always finds the right icon.
+    type DedicatedSection = { title: string; subtitle: string; content: string; imageUrl: string };
+
+    const DEDICATED_SECTION_DEFS: { key: string; title: string; subtitle: string; icon: string; placeholder: string }[] = [
+        { key: 'travel',   title: 'How to Plan Your Travel',             subtitle: 'Flight, Train, Bus and All Essential Travel Details',         icon: '🚌', placeholder: 'Describe how to reach the trek base camp — by flight, train, road etc...' },
+        { key: 'camping',  title: 'What is the Camping Experience Like?', subtitle: 'Stay, Food, Toilet and Safety on a HikingPlanet Trek',         icon: '⛺', placeholder: 'Describe the tent setup, food, toilet facilities and safety measures...' },
+        { key: 'stay',     title: 'Stay Options',                          subtitle: 'Budget and Premium Stay Options that Trekkers Recommend',       icon: '🏠', placeholder: 'List budget stays, guesthouses and premium options near the base...' },
+        { key: 'packing',  title: 'Packing List',                          subtitle: 'Things you must take on the trek',                            icon: '🎒', placeholder: 'List all mandatory and optional items trekkers must pack...' },
+        { key: 'fitness',  title: 'How to Get Fit for this Trek',          subtitle: 'A 6-Week Plan to Help You Get Trek-Fit',                      icon: '💪', placeholder: 'Provide a 6-week fitness and training plan...' },
+        { key: 'faq',      title: 'Frequently Asked Questions',            subtitle: 'Get your questions answered here',                             icon: '❓', placeholder: 'List common questions and detailed answers...' },
+    ];
+
+    // Build initial dedicated section values from existing infoSections (matching by title)
+    const findDedicated = (title: string): DedicatedSection =>
+        (initialData?.infoSections || []).find((s: any) => s.title === title) ||
+        { title, subtitle: '', content: '', imageUrl: '' };
+
+    const [dedicatedSections, setDedicatedSections] = useState<Record<string, DedicatedSection>>(
+        Object.fromEntries(DEDICATED_SECTION_DEFS.map(d => [
+            d.key,
+            { ...findDedicated(d.title), title: d.title, subtitle: findDedicated(d.title).subtitle || d.subtitle }
+        ]))
+    );
+
+    const updateDedicatedContent = (key: string, value: string) =>
+        setDedicatedSections(prev => ({ ...prev, [key]: { ...prev[key], content: value } }));
+    const updateDedicatedImageUrl = (key: string, url: string) =>
+        setDedicatedSections(prev => ({ ...prev, [key]: { ...prev[key], imageUrl: url } }));
+
     const [routeMap, setRouteMap] = useState<string>(initialData?.routeMap || '');
     
     // Quick Itinerary Handlers
@@ -149,10 +181,20 @@ export default function TrekForm({ initialData }: TrekFormProps) {
             const validBestSeasonDetails = bestSeasonDetails.filter(s => s.seasonName);
             const validTrekReviews = trekReviews.filter(r => r.reviewerName && r.reviewerName.trim() !== '');
 
+            // Merge dedicated sections into infoSections:
+            // Dedicated sections with content come first (in defined order), then generic ones.
+            const dedicatedMerged: DedicatedSection[] = DEDICATED_SECTION_DEFS
+                .map(d => dedicatedSections[d.key])
+                .filter(s => s.content && s.content.trim() !== '');
+            // Remove any generic sections that duplicate a dedicated title
+            const dedicatedTitles = new Set(DEDICATED_SECTION_DEFS.map(d => d.title));
+            const genericOnly = validInfoSections.filter(s => !dedicatedTitles.has(s.title));
+            const mergedInfoSections = [...dedicatedMerged, ...genericOnly];
+
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, difficultyDetails, bestSeasonDetails: validBestSeasonDetails, trekReviews: validTrekReviews, infoIntro, infoSections: validInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
+                body: JSON.stringify({ ...formData, difficultyDetails, bestSeasonDetails: validBestSeasonDetails, trekReviews: validTrekReviews, infoIntro, infoSections: mergedInfoSections, highlights: validHighlights, itinerary: validItinerary, detailedItinerary: validDetailedItinerary, routeMap }),
             });
 
             if (!res.ok) {
@@ -888,6 +930,42 @@ export default function TrekForm({ initialData }: TrekFormProps) {
                     )}
                 </div>
             </div>
+
+            {/* ── 6 Dedicated IndiHikes-style Sections ──────────────────────── */}
+            {DEDICATED_SECTION_DEFS.map(def => (
+                <div key={def.key} className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 flex items-center justify-center bg-amber-50 dark:bg-amber-900/20 rounded-xl text-2xl shrink-0">
+                            {def.icon}
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{def.title}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{def.subtitle}</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label className={labelClasses}>Content <span className="text-gray-400 font-normal normal-case">(shown when accordion is expanded)</span></label>
+                            <textarea
+                                rows={6}
+                                placeholder={def.placeholder}
+                                value={dedicatedSections[def.key]?.content || ''}
+                                onChange={e => updateDedicatedContent(def.key, e.target.value)}
+                                className={inputClasses}
+                            />
+                        </div>
+                        <div>
+                            <label className={labelClasses}>Section Image <span className="text-gray-400 font-normal normal-case">(optional — map, chart or illustrative image)</span></label>
+                            <ImageUpload
+                                value={dedicatedSections[def.key]?.imageUrl ? [dedicatedSections[def.key].imageUrl] : []}
+                                onChange={(urls: string[]) => updateDedicatedImageUrl(def.key, urls[0] || '')}
+                                disabled={loading}
+                            />
+                        </div>
+                    </div>
+                </div>
+            ))}
 
             {/* Complete Trek Info Accordion Card */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">

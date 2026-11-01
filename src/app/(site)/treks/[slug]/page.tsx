@@ -90,6 +90,14 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
         imageUrl: s.imageUrl ?? '',
     }));
 
+    // Serialize trekReviews — ObjectId _id must not be passed to Client Components
+    const trekReviews = ((trek as any).trekReviews ?? []).map((r: any) => ({
+        reviewerName: r.reviewerName ?? '',
+        trekGroup: r.trekGroup ?? '',
+        title: r.title ?? '',
+        content: r.content ?? '',
+    }));
+
     const SnapshotItem = ({ icon: Icon, label, value }: { icon: any; label: string; value: string | undefined }) => (
         <div className="flex items-start gap-2.5 select-none group">
             <div className="shrink-0 text-[#1f7a4c] group-hover:scale-110 transition-transform duration-300">
@@ -225,7 +233,7 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                     </section>
 
                     {/* Trek Reviews (Admin Managed) */}
-                    <TrekDetailReviews reviews={trek.trekReviews} />
+                    <TrekDetailReviews reviews={trekReviews} />
 
                     {/* Inclusions / Exclusions — only shown if admin has added data */}
                     {((trek.inclusions && trek.inclusions.length > 0) || (trek.exclusions && trek.exclusions.length > 0)) && (
@@ -268,8 +276,21 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                         trekTitle={trek.title}
                         infoIntro={trek.infoIntro ?? ''}
                         sections={infoSections}
-                        difficultyDetails={trek.difficultyDetails}
-                        bestSeasonDetails={trek.bestSeasonDetails}
+                        difficultyDetails={trek.difficultyDetails ? {
+                            level: (trek.difficultyDetails as any).level ?? '',
+                            description: (trek.difficultyDetails as any).description ?? '',
+                            terrain: (trek.difficultyDetails as any).terrain ?? '',
+                            weather: (trek.difficultyDetails as any).weather ?? '',
+                            altitude: (trek.difficultyDetails as any).altitude ?? '',
+                            safety: (trek.difficultyDetails as any).safety ?? '',
+                        } : undefined}
+                        bestSeasonDetails={(trek.bestSeasonDetails as any[])?.map((s: any) => ({
+                            seasonName: s.seasonName ?? '',
+                            temperature: s.temperature ?? '',
+                            weather: s.weather ?? '',
+                            warmLayers: s.warmLayers ?? '',
+                            description: s.description ?? '',
+                        }))}
                         itinerary={trek.itinerary?.map((item: any) => ({
                             day: item.day,
                             title: item.title,
