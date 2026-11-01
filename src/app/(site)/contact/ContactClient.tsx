@@ -15,11 +15,75 @@ import {
     CheckCircle,
     WarningCircle,
     CaretDown,
-    ArrowRight
+    ArrowRight,
+    PaperPlaneTilt,
+    CircleNotch,
+    ShieldCheck
 } from '@phosphor-icons/react';
 
 export default function ContactClient() {
     const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+    const [formState, setFormState] = useState({
+        name: '',
+        mobile: '',
+        email: '',
+        city: '',
+        trek: 'Kedarkantha Trek',
+        month: 'October',
+        trekkers: '1',
+        experience: 'Beginner',
+        message: '',
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [formError, setFormError] = useState('');
+
+    const handleSubmitEnquiry = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setFormError('');
+
+        try {
+            const trekkersCount = parseInt(formState.trekkers, 10) || 1;
+            const res = await fetch('/api/enquiry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formState.name.trim(),
+                    mobile: formState.mobile.trim(),
+                    email: formState.email.trim(),
+                    city: formState.city.trim(),
+                    trek: formState.trek,
+                    month: formState.month,
+                    trekkers: trekkersCount,
+                    experience: formState.experience,
+                    message: formState.message.trim(),
+                    source: 'contact-page',
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to submit enquiry. Please try again.');
+            }
+
+            setFormSubmitted(true);
+
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    campaignId: 'contact-page',
+                    eventName: 'contact_form_submitted',
+                }),
+            }).catch(() => {});
+        } catch (err: any) {
+            setFormError(err.message || 'Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const [findTrekState, setFindTrekState] = useState({
         month: 'October',
@@ -62,7 +126,7 @@ export default function ContactClient() {
                                 <WhatsappLogo weight="fill" className="w-6 h-6" />
                                 WhatsApp an Expert
                             </a>
-                            <a href="tel:+918556043708" className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-3 w-full sm:w-auto border border-gray-300 shadow-sm">
+                            <a href="#contact-form" className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-full font-bold uppercase tracking-widest transition-colors flex items-center justify-center gap-3 w-full sm:w-auto border border-gray-300 shadow-sm">
                                 <CalendarCheck weight="fill" className="w-6 h-6 text-red-600" />
                                 Book a Callback
                             </a>
@@ -83,13 +147,13 @@ export default function ContactClient() {
                                 <p className="text-gray-500 text-sm mb-6">View upcoming treks</p>
                                 <span className="text-red-600 text-sm font-bold uppercase tracking-widest mt-auto group-hover:translate-x-1 transition-transform inline-block">Explore →</span>
                             </a>
-                            <a href="#find-my-trek" className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg hover:border-blue-200 transition-all group flex flex-col items-center text-center h-full">
-                                <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6">
-                                    <Info weight="fill" className="w-8 h-8 text-blue-600" />
+                            <a href="#contact-form" className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg hover:border-red-200 transition-all group flex flex-col items-center text-center h-full">
+                                <div className="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center mb-6">
+                                    <EnvelopeSimple weight="fill" className="w-8 h-8 text-red-600" />
                                 </div>
-                                <h3 className="font-bold text-lg mb-2 text-gray-900">I&apos;m not sure which trek to choose</h3>
-                                <p className="text-gray-500 text-sm mb-6">Find My Trek</p>
-                                <span className="text-blue-600 text-sm font-bold uppercase tracking-widest mt-auto group-hover:translate-x-1 transition-transform inline-block">Discover →</span>
+                                <h3 className="font-bold text-lg mb-2 text-gray-900">Send an Enquiry</h3>
+                                <p className="text-gray-500 text-sm mb-6">Fill our contact form</p>
+                                <span className="text-red-600 text-sm font-bold uppercase tracking-widest mt-auto group-hover:translate-x-1 transition-transform inline-block">Fill Form →</span>
                             </a>
                             <a href="https://wa.me/918556043708" target="_blank" rel="noopener noreferrer" className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg hover:border-[#25D366]/30 transition-all group flex flex-col items-center text-center h-full">
                                 <div className="w-14 h-14 bg-[#25D366]/10 rounded-xl flex items-center justify-center mb-6">
@@ -107,6 +171,324 @@ export default function ContactClient() {
                                 <p className="text-gray-500 text-sm mb-6">Booking Support</p>
                                 <span className="text-orange-500 text-sm font-bold uppercase tracking-widest mt-auto group-hover:translate-x-1 transition-transform inline-block">Get Help →</span>
                             </a>
+                        </div>
+                    </FadeIn>
+                </section>
+
+                {/* Contact & Enquiry Form Section */}
+                <section id="contact-form" className="scroll-mt-28">
+                    <FadeIn>
+                        <div className="bg-gradient-to-br from-gray-50 via-white to-gray-50 border border-gray-200 rounded-3xl p-6 sm:p-10 md:p-14 shadow-lg relative overflow-hidden">
+                            {/* Decorative background blur */}
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+                            <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
+
+                            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start relative z-10">
+                                {/* Left Info / Context Column */}
+                                <div className="lg:col-span-5 space-y-6">
+                                    <div className="inline-flex items-center gap-2 bg-red-50 border border-red-200 text-red-600 text-xs font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                                        <ShieldCheck weight="fill" className="w-4 h-4" />
+                                        Direct From Basecamp
+                                    </div>
+                                    <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
+                                        Send Us an <span className="text-red-600">Inquiry</span>
+                                    </h2>
+                                    <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                                        Planning a solo trek, group summit, or custom corporate expedition? Leave your details below and our team in Uttarkashi will get back to you with tailored itineraries and batch schedules.
+                                    </p>
+
+                                    {/* Value highlights */}
+                                    <div className="space-y-4 pt-2">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <CheckCircle weight="fill" className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900">Swift 2–4 Hour Response</p>
+                                                <p className="text-xs text-gray-500">Every inquiry is reviewed directly by our certified trek leaders.</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <CheckCircle weight="fill" className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900">Custom Group & Solo Itineraries</p>
+                                                <p className="text-xs text-gray-500">Tailored routes, dates, and difficulty calibrations for your group.</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <CheckCircle weight="fill" className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900">Zero Pressure, Honest Advice</p>
+                                                <p className="text-xs text-gray-500">No pushy sales. We help you pick the safest, most rewarding experience.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* WhatsApp Direct fallback card */}
+                                    <div className="p-5 rounded-2xl bg-[#25D366]/10 border border-[#25D366]/20 flex items-center justify-between gap-4">
+                                        <div>
+                                            <p className="font-bold text-gray-900 text-sm">Need an instant reply?</p>
+                                            <p className="text-xs text-gray-600">Our trek leaders are online on WhatsApp.</p>
+                                        </div>
+                                        <a
+                                            href="https://wa.me/918556043708?text=Hi%2C%20I%20have%20an%20enquiry%20regarding%20a%20Himalayan%20trek."
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-full shadow-sm transition-all flex-shrink-0"
+                                        >
+                                            <WhatsappLogo weight="fill" className="w-4 h-4" />
+                                            Chat Now
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Right Form Column */}
+                                <div className="lg:col-span-7">
+                                    <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 md:p-10 shadow-sm relative">
+                                        {formSubmitted ? (
+                                            <div className="py-12 px-4 text-center space-y-5">
+                                                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                                                    <CheckCircle weight="fill" className="w-10 h-10" />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <h3 className="text-2xl font-extrabold text-gray-900">Enquiry Received!</h3>
+                                                    <p className="text-gray-600 max-w-md mx-auto text-sm leading-relaxed">
+                                                        Thank you, <span className="font-bold text-gray-900">{formState.name}</span>! We&apos;ve logged your enquiry for <span className="font-semibold text-gray-900">{formState.trek || 'your Himalayan trek'}</span>. Our trek coordinator will connect with you via mobile or email shortly.
+                                                    </p>
+                                                </div>
+                                                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                                                    <a
+                                                        href={`https://wa.me/918556043708?text=${encodeURIComponent(`Hi, I just submitted an enquiry on the website. My name is ${formState.name} and I'm interested in ${formState.trek || 'a trek'}.`)}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+                                                    >
+                                                        <WhatsappLogo weight="fill" className="w-5 h-5" />
+                                                        Follow Up on WhatsApp
+                                                    </a>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setFormSubmitted(false);
+                                                            setFormState({
+                                                                name: '',
+                                                                mobile: '',
+                                                                email: '',
+                                                                city: '',
+                                                                trek: 'Kedarkantha Trek',
+                                                                month: 'October',
+                                                                trekkers: '1',
+                                                                experience: 'Beginner',
+                                                                message: '',
+                                                            });
+                                                        }}
+                                                        className="w-full sm:w-auto text-gray-600 hover:text-gray-900 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
+                                                    >
+                                                        Send Another Inquiry
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <form onSubmit={handleSubmitEnquiry} className="space-y-5">
+                                                <div>
+                                                    <h3 className="text-xl font-extrabold text-gray-900">Plan Your Himalayan Journey</h3>
+                                                    <p className="text-xs text-gray-500 mt-1">Fields marked with <span className="text-red-500">*</span> are required.</p>
+                                                </div>
+
+                                                {formError && (
+                                                    <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-3">
+                                                        <WarningCircle weight="fill" className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                                                        <span>{formError}</span>
+                                                    </div>
+                                                )}
+
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {/* Full Name */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Full Name <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            required
+                                                            value={formState.name}
+                                                            onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                                                            placeholder="e.g. Rahul Sharma"
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all"
+                                                        />
+                                                    </div>
+
+                                                    {/* Phone / Mobile */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Phone / WhatsApp <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="tel"
+                                                            required
+                                                            value={formState.mobile}
+                                                            onChange={(e) => setFormState({ ...formState, mobile: e.target.value })}
+                                                            placeholder="e.g. +91 98765 43210"
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {/* Email */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Email Address <span className="text-red-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="email"
+                                                            required
+                                                            value={formState.email}
+                                                            onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                                                            placeholder="e.g. rahul@example.com"
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all"
+                                                        />
+                                                    </div>
+
+                                                    {/* City */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Your City
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            value={formState.city}
+                                                            onChange={(e) => setFormState({ ...formState, city: e.target.value })}
+                                                            placeholder="e.g. Delhi, Mumbai, Bengaluru"
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {/* Trek Selection */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Trek of Interest
+                                                        </label>
+                                                        <select
+                                                            value={formState.trek}
+                                                            onChange={(e) => setFormState({ ...formState, trek: e.target.value })}
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all cursor-pointer"
+                                                        >
+                                                            <option value="Kedarkantha Trek">Kedarkantha Trek</option>
+                                                            <option value="Dayara Bugyal Trek">Dayara Bugyal Trek</option>
+                                                            <option value="Har Ki Dun Trek">Har Ki Dun Trek</option>
+                                                            <option value="Brahmatal Trek">Brahmatal Trek</option>
+                                                            <option value="Gidara Bugyal Trek">Gidara Bugyal Trek</option>
+                                                            <option value="Kuari Pass Trek">Kuari Pass Trek</option>
+                                                            <option value="Roopkund Trek">Roopkund Trek</option>
+                                                            <option value="Gomukh Tapovan Trek">Gomukh Tapovan Trek</option>
+                                                            <option value="Butter Festival / Anduri Utsav">Butter Festival / Anduri Utsav</option>
+                                                            <option value="Custom / Other Himalayan Trek">Custom / Other Himalayan Trek</option>
+                                                            <option value="Not Sure Yet (Need Advice)">Not Sure Yet (Need Advice)</option>
+                                                        </select>
+                                                    </div>
+
+                                                    {/* Preferred Month */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Preferred Month / Time
+                                                        </label>
+                                                        <select
+                                                            value={formState.month}
+                                                            onChange={(e) => setFormState({ ...formState, month: e.target.value })}
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all cursor-pointer"
+                                                        >
+                                                            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Flexible / Anytime'].map((m) => (
+                                                                <option key={m} value={m}>{m}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {/* Number of Trekkers */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Number of Trekkers
+                                                        </label>
+                                                        <select
+                                                            value={formState.trekkers}
+                                                            onChange={(e) => setFormState({ ...formState, trekkers: e.target.value })}
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all cursor-pointer"
+                                                        >
+                                                            <option value="1">1 (Solo Trekker)</option>
+                                                            <option value="2">2 Trekkers</option>
+                                                            <option value="3">3 - 4 Trekkers</option>
+                                                            <option value="5">5 - 8 Trekkers</option>
+                                                            <option value="10">9+ (Group / Corporate)</option>
+                                                        </select>
+                                                    </div>
+
+                                                    {/* Experience Level */}
+                                                    <div className="space-y-1.5">
+                                                        <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                            Experience Level
+                                                        </label>
+                                                        <select
+                                                            value={formState.experience}
+                                                            onChange={(e) => setFormState({ ...formState, experience: e.target.value })}
+                                                            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all cursor-pointer"
+                                                        >
+                                                            <option value="Beginner">Beginner (Never Trekked)</option>
+                                                            <option value="Moderate">Moderate (Done 1–2 Treks)</option>
+                                                            <option value="Intermediate">Intermediate (Regular Hiker)</option>
+                                                            <option value="Experienced">Experienced (High-Altitude Veteran)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                {/* Message / Query */}
+                                                <div className="space-y-1.5">
+                                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                                                        Message / Special Requirements
+                                                    </label>
+                                                    <textarea
+                                                        rows={3}
+                                                        value={formState.message}
+                                                        onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                                                        placeholder="Tell us about your preferred dates, fitness levels, dietary requirements, or any specific questions..."
+                                                        className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-600/20 focus:border-red-600 transition-all resize-y"
+                                                    />
+                                                </div>
+
+                                                {/* Submit Button */}
+                                                <button
+                                                    type="submit"
+                                                    disabled={isSubmitting}
+                                                    className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+                                                >
+                                                    {isSubmitting ? (
+                                                        <>
+                                                            <CircleNotch weight="bold" className="w-5 h-5 animate-spin" />
+                                                            Sending Enquiry...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <PaperPlaneTilt weight="fill" className="w-5 h-5" />
+                                                            Submit Trek Enquiry
+                                                        </>
+                                                    )}
+                                                </button>
+
+                                                <p className="text-center text-[11px] text-gray-500 font-medium">
+                                                    🔒 We respect your privacy. No spam. Direct contact from our local mountain team.
+                                                </p>
+                                            </form>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </FadeIn>
                 </section>
