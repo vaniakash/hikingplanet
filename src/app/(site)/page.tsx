@@ -46,7 +46,49 @@ async function FeaturedTreks() {
   return <PlanYourAdventure initialTreks={JSON.parse(JSON.stringify(featuredTreks))} />;
 }
 
-// ── Loading skeleton ──
+// ── Async component: Open Batches (streams via Suspense) ──
+async function OpenBatches() {
+  const dbConnect = (await import('@/lib/db')).default;
+  const Trip = (await import('@/models/Trip')).default;
+  await import('@/models/Trek'); // ensure model registered
+
+  await dbConnect();
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const trips = await Trip.find({
+    status: 'open',
+    startDate: { $gte: today },
+  })
+    .populate('trek', 'title slug location difficulty duration price originalPrice images elevation isActive')
+    .sort({ startDate: 1 })
+    .lean();
+
+  const validTrips = trips.filter((t: any) => t.trek && t.trek.title && t.trek.slug);
+
+  const OpenBatchesSection = (await import('@/components/OpenBatchesSection')).default;
+
+  return <OpenBatchesSection initialTrips={JSON.parse(JSON.stringify(validTrips))} />;
+}
+
+// ── Loading skeletons ──
+function OpenBatchesSkeleton() {
+  return (
+    <section className="py-20 bg-slate-50 border-t border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-6 bg-slate-200 rounded w-48 mx-auto mb-4 animate-pulse" />
+        <div className="h-10 bg-slate-200 rounded w-72 mx-auto mb-10 animate-pulse" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white rounded-2xl border border-gray-200 p-5 h-96 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function TrekCardsSkeleton() {
   return (
     <section className="py-20 bg-white">
@@ -95,6 +137,11 @@ export default async function Home() {
       {/* ── Plan Your Next Adventure ── */}
       <Suspense fallback={<TrekCardsSkeleton />}>
         <FeaturedTreks />
+      </Suspense>
+
+      {/* ── Upcoming Open Batches ── */}
+      <Suspense fallback={<OpenBatchesSkeleton />}>
+        <OpenBatches />
       </Suspense>
 
       {/* ── The Hiking Planet Way ── */}

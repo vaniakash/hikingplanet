@@ -3,6 +3,8 @@ import Script from "next/script";
 import { Geist, Geist_Mono, Fraunces, Caveat } from "next/font/google";
 import "./globals.css";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import CookieConsentProvider from "@/components/CookieConsentProvider";
+import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -189,25 +191,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${caveat.variable} antialiased font-sans`}
       >
-        <PageTracker />
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-Z9CW4VK4KX"
-        />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-Z9CW4VK4KX');
-            `,
-          }}
-        />
-        {children}
-        <WhatsAppButton />
+        <CookieConsentProvider>
+          <PageTracker />
+          <ConditionalAnalytics />
+          {children}
+          <WhatsAppButton />
+        </CookieConsentProvider>
       </body>
     </html>
   );

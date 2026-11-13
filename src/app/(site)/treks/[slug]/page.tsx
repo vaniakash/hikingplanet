@@ -198,7 +198,7 @@ export default async function TrekDetailPage({ params }: { params: Promise<{ slu
                 </section>
 
                 {/* ── Booking Card — sticky, spans both rows on desktop ── */}
-                <div className="lg:col-span-1 lg:row-span-2">
+                <div id="batches" className="lg:col-span-1 lg:row-span-2 scroll-mt-28">
                     <BookingSummaryCard
                         price={trek.price}
                         originalPrice={trek.originalPrice}

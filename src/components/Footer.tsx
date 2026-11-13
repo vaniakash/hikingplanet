@@ -12,10 +12,14 @@ import {
     ShieldCheck,
     LockKey,
     Certificate,
-    ArrowUp
+    ArrowUp,
+    Cookie
 } from '@phosphor-icons/react';
+import { useCookieConsentCtx } from '@/components/CookieConsentProvider';
 
 export default function Footer() {
+    const { openSettings } = useCookieConsentCtx();
+
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -188,6 +192,14 @@ export default function Footer() {
                             <a href="/files/Hiking_Planet_Cancellation_Refund_Policy.pdf" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--terracotta)] transition-colors">Cancellation & Refund Policy</a>
                             <a href="/files/Hiking_Planet_Trekker_Disclaimer%20(1).pdf" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--terracotta)] transition-colors">Disclaimer</a>
                             <Link href="/policies/cookie" className="hover:text-[var(--terracotta)] transition-colors">Cookie Policy</Link>
+                            <button
+                                type="button"
+                                onClick={openSettings}
+                                className="hover:text-[var(--terracotta)] transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                            >
+                                <Cookie className="w-3 h-3" />
+                                Cookie Settings
+                            </button>
                             <Link href="/admin/login" className="hover:text-[var(--terracotta)] transition-colors opacity-30 hover:opacity-100">Admin Login</Link>
                         </div>
                         <div className="text-center md:text-right uppercase tracking-[0.2em] text-[10px] font-black text-white/30">
