@@ -23,6 +23,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         { name: 'Lead Management', href: '/admin/leads', icon: Users, badge: 12, isComingSoon: false },
         { name: 'Manage Treks', href: '/admin/treks', icon: Mountain, isComingSoon: false },
         { name: 'All Bookings', href: '/admin/bookings', icon: Calendar, isComingSoon: false },
+        { name: 'All Users', href: '/admin/users', icon: User, isComingSoon: false },
         { name: 'Payments', href: '/admin/payments', icon: CreditCard, isComingSoon: false },
         { name: 'Settings', href: '#', icon: Settings, isComingSoon: true },
     ];
