@@ -98,6 +98,18 @@ const articles = [
         href: '/latest-articles/dayara-bugyal-vs-kedarkantha-trek-2027',
     },
     {
+        id: 'kuari-pass-trek-guide',
+        title: 'Kuari Pass Trek: Complete Guide 2027 — Route, Altitude, Best Time & Itinerary',
+        tag: 'Trek Guide',
+        excerpt:
+            'The Lord Curzon Trail: panoramic views of Nanda Devi, Dronagiri & Kamet from 3,857 m. 6-day itinerary, difficulty breakdown, best time to visit, and full packing list.',
+        author: 'The HikingPlanet Team',
+        date: '2026-11-18',
+        readTime: '8 min read',
+        image: '/treks_images/kuari-pass-trek-uttarakhand.jpg',
+        href: '/latest-articles/kuari-pass-trek-guide',
+    },
+    {
         id: 'sahastra-tal-trek',
         title: 'Sahastra Tal Trek Uttarakhand: Complete Guide, Route, Difficulty, Best Time & Itinerary',
         tag: 'High-Altitude Expedition',

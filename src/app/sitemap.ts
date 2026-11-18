@@ -82,6 +82,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.85,
         },
         {
+            url: `${baseUrl}/latest-articles/kuari-pass-trek-guide`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.85,
+        },
+        {
             url: `${baseUrl}/latest-articles/sahastra-tal-trek`,
             lastModified: new Date(),
             changeFrequency: 'monthly',
