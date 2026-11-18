@@ -155,8 +155,8 @@ export default function AdminUsersPage() {
                             ) : (
                                 filtered.map((u) => {
                                     const initials = u.name
-                                        ? u.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-                                        : u.email[0].toUpperCase();
+                                        ? u.name.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().slice(0, 2)
+                                        : (u.email?.[0] ?? '?').toUpperCase();
                                     return (
                                         <tr key={u._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors group">
                                             {/* User */}
