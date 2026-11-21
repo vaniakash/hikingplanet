@@ -126,57 +126,86 @@ export function WhySection() {
 
 export function CTASection() {
     return (
-        <section className="py-24 bg-[#2D4030] relative overflow-hidden">
-            <div className="absolute inset-0 indigenous-pattern opacity-10" />
+        <section className="relative py-28 md:py-36 bg-[#08150F] overflow-hidden selection:bg-[#E30613] selection:text-white">
+            {/* Ambient Mountain Gradients */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-emerald-600/15 via-[#C25E44]/10 to-transparent blur-3xl rounded-full" />
+                <div className="absolute -bottom-32 right-10 w-[500px] h-[350px] bg-emerald-500/10 blur-3xl rounded-full" />
+                <div className="absolute inset-0 bg-[radial-gradient(#143D2B_1px,transparent_1px)] [background-size:24px_24px] opacity-25" />
+            </div>
 
-            {/* Animated background blobs */}
-            <motion.div
-                className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#C25E44]/10 blur-3xl"
-                animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <motion.div
-                className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#C25E44]/10 blur-3xl"
-                animate={{ scale: [1.15, 1, 1.15], opacity: [1, 0.6, 1] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            />
-
-            <div className="container mx-auto px-6 max-w-7xl relative z-10 text-center">
+            <div className="container mx-auto px-6 max-w-5xl relative z-10 text-center">
                 <motion.div
                     initial="hidden"
                     whileInView="show"
                     viewport={{ once: true, margin: '-80px' }}
-                    variants={staggerContainer(0.15, 0.1)}
+                    variants={staggerContainer(0.12, 0.05)}
+                    className="flex flex-col items-center"
                 >
-                    <motion.span variants={fadeUp} className="text-[#C25E44] font-black uppercase tracking-[0.4em] text-xs mb-4 block">
-                        Begin Your Journey
-                    </motion.span>
+                    {/* Badge */}
+                    <motion.div
+                        variants={fadeUp}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-widest mb-6 shadow-sm backdrop-blur-sm"
+                    >
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Begin Your Himalayan Odyssey</span>
+                    </motion.div>
 
-                    <motion.h2 variants={fadeUp} className="text-5xl md:text-7xl font-extrabold text-white uppercase tracking-tight mb-8">
-                        Ready to <span className="text-[#C25E44] italic">Explore?</span>
+                    {/* Main Headline */}
+                    <motion.h2
+                        variants={fadeUp}
+                        className="text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight uppercase leading-[1.05] mb-6 font-serif"
+                    >
+                        Ready to <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-[#E30613] to-rose-400 italic">Explore?</span>
                     </motion.h2>
 
-                    <motion.p variants={fadeUp} className="text-white/70 text-lg max-w-xl mx-auto mb-12">
-                        Step onto the ancient trails and discover landscapes that have inspired seekers for centuries.
+                    {/* Subheading */}
+                    <motion.p
+                        variants={fadeUp}
+                        className="text-slate-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light mb-10"
+                    >
+                        Step onto ancient Himalayan trails and witness sunrise panoramas from 12,000+ ft. Handcrafted itineraries, certified mountain leaders, and small-group departures.
                     </motion.p>
 
-                    <motion.div variants={fadeUp} className="flex flex-wrap justify-center items-center gap-6">
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                            <Link href="/upcoming-treks">
-                                <button className="bg-[#C25E44] text-white px-10 py-5 font-black uppercase tracking-widest flex items-center gap-4 group angular-card hover:bg-[#8E4D3E] transition-all">
-                                    Browse All Treks
-                                    <ArrowRight weight="bold" className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                                </button>
+                    {/* Action Buttons */}
+                    <motion.div
+                        variants={fadeUp}
+                        className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-12"
+                    >
+                        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            <Link
+                                href="/upcoming-treks"
+                                className="inline-flex items-center gap-3 bg-[#E30613] hover:bg-[#c20510] text-white px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-bold uppercase tracking-wider text-xs sm:text-sm transition-all duration-300 shadow-[0_10px_30px_-5px_rgba(227,6,19,0.4)] group"
+                            >
+                                <span>Browse All Treks</span>
+                                <ArrowRight weight="bold" className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                             </Link>
                         </motion.div>
 
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
-                            <Link href="/contact">
-                                <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-10 py-5 font-black uppercase tracking-widest angular-card hover:bg-white/20 transition-all">
-                                    Contact Us
-                                </button>
+                        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            <Link
+                                href="/contact"
+                                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/15 text-white border border-white/20 hover:border-white/40 px-8 sm:px-10 py-4 sm:py-4.5 rounded-full font-bold uppercase tracking-wider text-xs sm:text-sm backdrop-blur-md transition-all duration-300"
+                            >
+                                <span>Contact Us</span>
                             </Link>
                         </motion.div>
+                    </motion.div>
+
+                    {/* Trust Highlights */}
+                    <motion.div
+                        variants={fadeUp}
+                        className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 pt-8 border-t border-white/10 text-xs sm:text-sm text-emerald-200/80 font-medium"
+                    >
+                        <span className="flex items-center gap-2">
+                            <span className="text-emerald-400 font-bold">✓</span> Confirmed Batch Departures
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <span className="text-emerald-400 font-bold">✓</span> Certified Mountain Guides
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <span className="text-emerald-400 font-bold">✓</span> Zero-Waste Green Trails
+                        </span>
                     </motion.div>
                 </motion.div>
             </div>
