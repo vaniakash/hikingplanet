@@ -3,7 +3,6 @@ import HeroBanner from '@/components/HeroBanner';
 import { CTASection, FeaturedTreksHeader } from '@/components/AnimatedSections';
 import LeadCapturePopup from '@/components/LeadCapturePopup';
 import TheHikingPlanetWay from '@/components/TheHikingPlanetWay';
-import KedarkanthaJournal from '@/components/KedarkanthaJournal';
 import TrekkerReviews from '@/components/TrekkerReviews';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -99,9 +98,6 @@ export default async function Home() {
 
       {/* ── The Hiking Planet Way ── */}
       <TheHikingPlanetWay />
-
-      {/* ── Kedarkantha Trek Journal ── */}
-      <KedarkanthaJournal />
 
       {/* ── Trekker Reviews ── */}
       <TrekkerReviews />
