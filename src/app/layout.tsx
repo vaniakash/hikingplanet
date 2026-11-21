@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono, Fraunces, Caveat } from "next/font/google";
 import "./globals.css";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import SideContactWidget from "@/components/SideContactWidget";
 import CookieConsentProvider from "@/components/CookieConsentProvider";
 import ConditionalAnalytics from "@/components/ConditionalAnalytics";
 
@@ -195,7 +195,7 @@ export default function RootLayout({
           <PageTracker />
           <ConditionalAnalytics />
           {children}
-          <WhatsAppButton />
+          <SideContactWidget />
         </CookieConsentProvider>
       </body>
     </html>
