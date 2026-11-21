@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { List, X, CaretDown, CaretUp, Megaphone, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr';
+import { Phone, PhoneCall } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Navbar({ treks = [] }: { treks?: any[] }) {
@@ -91,7 +92,37 @@ export default function Navbar({ treks = [] }: { treks?: any[] }) {
 
     return (
         <header ref={navRef} className="sticky top-0 z-50 w-full flex flex-col bg-white shadow-md select-none">
+            {/* ── Top Announcement Bar (Forest Green) ── */}
+            <div className="bg-[#143D2B] text-white px-3 sm:px-6 lg:px-8 py-2 border-b border-[#0D281C] text-xs flex items-center justify-between gap-2 sm:gap-4">
+                {/* Left side: HikingPlanet Branding / Announcement */}
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="bg-[#2D6A4F] text-emerald-100 text-[10px] sm:text-xs font-black uppercase tracking-wider px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-400/30 shrink-0">
+                        HikingPlanet
+                    </span>
+                    <span className="text-emerald-100/90 text-xs font-semibold truncate hidden md:inline">
+                        • Verified Himalayan Treks &amp; Mountain Expeditions
+                    </span>
+                </div>
 
+                {/* Right side: Contact No & Call Button */}
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+                    <a
+                        href="tel:+918556043708"
+                        className="flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-white hover:text-emerald-200 transition-colors"
+                        title="Call HikingPlanet"
+                    >
+                        <Phone size={13} className="text-emerald-400 shrink-0" />
+                        <span className="tracking-wide">+91 85560 43708</span>
+                    </a>
+                    <a
+                        href="tel:+918556043708"
+                        className="inline-flex items-center gap-1 sm:gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-2.5 sm:px-3 py-1 rounded-full transition-all shadow-sm active:scale-95"
+                    >
+                        <PhoneCall size={12} className="text-white" />
+                        <span>Call</span>
+                    </a>
+                </div>
+            </div>
 
             {/* ── Main Navigation Bar (White) ── */}
             <div className="bg-white border-b border-gray-100 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 flex items-center justify-between gap-4">
